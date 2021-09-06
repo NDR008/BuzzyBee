@@ -1,0 +1,81 @@
+{
+"version": "2.0.0",
+"tasks": [
+        {            
+            "label": "Build(win)",
+            "type": "shell",
+            "windows": {
+                "command": "make",
+                "options": {
+                    "cwd": "${workspaceFolder}"
+                }
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": []
+        },
+        {            
+            "label": "Clean(win)",
+            "type": "shell",
+            "windows": {
+                "command": "make clean",
+                "options": {
+                    "cwd": "${workspaceFolder}"
+                }
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": []
+        },
+        {            
+            "label": "Build(linux)",
+            "type": "shell",
+            "linux": {
+                "command": "make",
+                "options": {
+                    "cwd": "${workspaceFolder}"
+                }
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": []
+        },
+                {            
+            "label": "Clean(linux)",
+            "type": "shell",
+            "linux": {
+                "command": "make clean",
+                "options": {
+                    "cwd": "${workspaceFolder}"
+                }
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": []
+        }
+    ]
+}

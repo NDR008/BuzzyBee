@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "syscalls.h": "c",
+        "pcsxhw.h": "c",
+        "types.h": "c"
+    }
+}
