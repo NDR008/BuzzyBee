@@ -29,7 +29,7 @@ SOFTWARE.
 // #include "common/syscalls/syscalls.h"
 #include <sys/types.h>
 #include <libetc.h>
-#include <libpad.h>
+//#include <libpad.h>
 //#include <hardware/pcsxhw.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -37,7 +37,8 @@ SOFTWARE.
 #include <libgpu.h>
 #include <libgs.h>
 #include "libs/images.h"
-#include "libs/basics.h"
+#include "engine/basics.h"
+#include "engine/input.h"
 
 // Global system
 #define OT_LENGTH 1
@@ -58,9 +59,12 @@ void gameScreen();
 
 void initialize() {
 	initializeScreen();
-	PadInit(0);	
+	//PadInit(0);	
+    in_init();
+
 	setBackgroundColor(createColor(30, 30, 30));
 	initializeDebugFont();
+
     //init scene
 	ballSprite = createImage(img_ball);
 	ballSprite = scaleImage(ballSprite, 50, 50);
@@ -79,6 +83,7 @@ int main() {
     printf("BuzzyBee\n");
     while (1) {
         clearDisplay();
+        in_update();
         flushDisplay(); // dump it to the screen
     }
 }
