@@ -1,9 +1,7 @@
 #include <string.h>
 #include <libpad.h>
 #include <libapi.h>
-
-#include "engine/common.h"
-#include "engine/input.h"
+#include "input.h"
 
 // and this struct def as well
 typedef struct {

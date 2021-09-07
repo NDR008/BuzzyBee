@@ -4,6 +4,7 @@
         "pcsxhw.h": "c",
         "types.h": "c",
         "pads.h": "c",
-        "input.h": "c"
+        "input.h": "c",
+        "stdbool.h": "c"
     }
 }

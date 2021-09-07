@@ -7,6 +7,8 @@ typedef   signed short s16;
 typedef unsigned   int u32;
 typedef   signed   int s32;
 
+#include <stdbool.h>
+
 // psyq lacks these
 enum pad_buttons {
   PAD_SELECT = 1,
