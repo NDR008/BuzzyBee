@@ -38,7 +38,7 @@ SOFTWARE.
 #include <libgs.h>
 #include "libs/images.h"
 #include "engine/basics.h"
-#include "engine/pads.h"
+#include "engine/input.h"
 
 // Global system
 #define OT_LENGTH 1

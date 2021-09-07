@@ -3,6 +3,7 @@
         "syscalls.h": "c",
         "pcsxhw.h": "c",
         "types.h": "c",
-        "pads.h": "c"
+        "pads.h": "c",
+        "input.h": "c"
     }
 }
