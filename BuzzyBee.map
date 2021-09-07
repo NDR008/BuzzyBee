@@ -385,9 +385,8 @@ END GROUP
  .text.in_init  0x000000008001083c       0x68 engine/input.o
                 0x000000008001083c                in_init
  .text.in_update
-                0x00000000800108a4       0xd0 engine/input.o
+                0x00000000800108a4       0xd4 engine/input.o
                 0x00000000800108a4                in_update
- *fill*         0x0000000080010974        0x4 
  .text          0x0000000080010978       0x10 ../third_party/psyq/lib/libapi.a(a91.o)
                 0x0000000080010978                ChangeClearPAD
  .text          0x0000000080010988      0x290 ../third_party/psyq/lib/libapi.a(pad.o)
@@ -859,11 +858,11 @@ OUTPUT(BuzzyBee.elf elf32-tradlittlemips)
  .note          0x00000000000020a0       0x74 ../third_party/psyq/lib/libc.a(c27.o)
  .note          0x0000000000002114       0x74 ../third_party/psyq/lib/libc.a(c43.o)
 
-.debug_info     0x0000000000000000     0x290d
+.debug_info     0x0000000000000000     0x2912
  .debug_info    0x0000000000000000      0xbae main.o
  .debug_info    0x0000000000000bae     0x1851 engine/basics.o
- .debug_info    0x00000000000023ff      0x4e8 engine/input.o
- .debug_info    0x00000000000028e7       0x26 ../third_party/common/crt0/crt0.o
+ .debug_info    0x00000000000023ff      0x4ed engine/input.o
+ .debug_info    0x00000000000028ec       0x26 ../third_party/common/crt0/crt0.o
 
 .debug_abbrev   0x0000000000000000      0x7e9
  .debug_abbrev  0x0000000000000000      0x1fc main.o
@@ -886,11 +885,11 @@ OUTPUT(BuzzyBee.elf elf32-tradlittlemips)
  .debug_ranges  0x0000000000000020       0xd0 engine/basics.o
  .debug_ranges  0x00000000000000f0       0x48 engine/input.o
 
-.debug_line     0x0000000000000000      0xb14
+.debug_line     0x0000000000000000      0xb17
  .debug_line    0x0000000000000000      0x1a1 main.o
  .debug_line    0x00000000000001a1      0x79c engine/basics.o
- .debug_line    0x000000000000093d      0x174 engine/input.o
- .debug_line    0x0000000000000ab1       0x63 ../third_party/common/crt0/crt0.o
+ .debug_line    0x000000000000093d      0x177 engine/input.o
+ .debug_line    0x0000000000000ab4       0x63 ../third_party/common/crt0/crt0.o
 
 .debug_str      0x0000000000000000      0xa15
  .debug_str     0x0000000000000000      0x612 main.o
