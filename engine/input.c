@@ -4,6 +4,7 @@
 #include <string.h>
 #include <libpad.h>
 #include <libapi.h>
+#include <stdio.h>
 #include "input.h"
 
 // and this struct def as well
@@ -75,6 +76,7 @@ static inline u32 in_remap(const u32 held) {
 }
 
 void in_update(void) {
+  printf("test: %i/n", input_held);
   PADTYPE *pad = (PADTYPE *)&padbuf[0][0];
   input_pad = ~pad->btn;
   input_old = input_held;
