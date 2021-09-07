@@ -5,4 +5,5 @@ engine/input.o: engine/input.c ../third_party/psyq/include/string.h \
  ../third_party/psyq/include/libapi.h \
  ../third_party/psyq/include/kernel.h ../third_party/psyq/include/r3000.h \
  ../third_party/psyq/include/asm.h engine/input.h \
- /usr/lib/gcc-cross/mipsel-linux-gnu/9/include/stdbool.h
+ /usr/lib/gcc-cross/mipsel-linux-gnu/9/include/stdbool.h \
+ ../third_party/psyq/include/stdio.h
