@@ -39,6 +39,7 @@ SOFTWARE.
 #include "libs/images.h"
 #include "engine/basics.h"
 #include "engine/input.h"
+#include "engine/timerz.h"
 
 // Global system
 #define OT_LENGTH 1
@@ -49,11 +50,18 @@ SOFTWARE.
 // temp sprites
 Image playerSprite;
 
+// Global timer
+PSXTimer mainTimer;
+
 typedef struct{
     Image sprite;
     int frame_n;
     int total_frames;
+    int y_pos;
+    int x_pos;
 } animatedObject;
+
+animatedObject mainPlayer;
 // functions/routines in this file
 
 void initialize();
@@ -71,16 +79,52 @@ void initialize() {
     //init scene
 }
 
-void gameScreen(){
+void updateAnimation(){
+    if (input_trig & PAD_UP) {
+        mainPlayer.y_pos -= 10;
+        mainPlayer.sprite = moveImage(mainPlayer.sprite, mainPlayer.x_pos, mainPlayer.y_pos);
+        return;
+    }
+    if (mainTimer.vsync % 10 == 0) {
+        mainPlayer.frame_n++;
+        if (mainPlayer.frame_n > mainPlayer.total_frames){
+            mainPlayer.frame_n = 0;
+            mainPlayer.sprite = createImage(img_beesprite0);
+        }
+        else {
+            mainPlayer.sprite = createImage(img_beesprite1);
+        }
+    }
+    else if (mainTimer.vsync % 5 == 0) {
+            mainPlayer.y_pos += 5;
+            if (mainPlayer.y_pos > 50){
+                mainPlayer.y_pos = 50;
+            }
+    }
+}
 
+
+void gameScreen(){
 }
 
 int main() {
     initialize();
     printf("BuzzyBee\n");
+    mainPlayer.sprite = createImage(img_beesprite0);
+    mainPlayer.total_frames = 1;
+    mainPlayer.y_pos = 0;
+    mainPlayer.x_pos = 0;
+    
+
+    mainTimer = createTimer();
     while (1) {
+        // printf("%i", mainTimer.vsync);
         clearDisplay();
+        updateAnimation();
+        mainPlayer.sprite = moveImage(mainPlayer.sprite, mainPlayer.x_pos, mainPlayer.y_pos);
+        drawImage(mainPlayer.sprite);
         in_update();
         flushDisplay(); // dump it to the screen
+        mainTimer = incTimer(mainTimer);
     }
 }
