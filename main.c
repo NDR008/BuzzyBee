@@ -80,22 +80,27 @@ void initialize() {
 }
 
 void updateAnimation(){
+    if (input_trig & PAD_UP) {
+        mainPlayer.y_pos -= 10;
+        mainPlayer.sprite = moveImage(mainPlayer.sprite, mainPlayer.x_pos, mainPlayer.y_pos);
+        return;
+    }
     if (mainTimer.vsync % 10 == 0) {
         mainPlayer.frame_n++;
         if (mainPlayer.frame_n > mainPlayer.total_frames){
             mainPlayer.frame_n = 0;
             mainPlayer.sprite = createImage(img_beesprite0);
-            printf("Frame0 vsync: %i", mainTimer.vsync);
         }
         else {
             mainPlayer.sprite = createImage(img_beesprite1);
-            printf("Frame1 vsync: %i", mainTimer.vsync);
         }
     }
-    if (input_held & PAD_SQUARE) {
-        mainPlayer.sprite = moveImage(mainPlayer.sprite, mainPlayer.x_pos, mainPlayer.y_pos+10);
+    else if (mainTimer.vsync % 5 == 0) {
+            mainPlayer.y_pos += 5;
+            if (mainPlayer.y_pos > 50){
+                mainPlayer.y_pos = 50;
+            }
     }
-
 }
 
 
@@ -107,15 +112,16 @@ int main() {
     printf("BuzzyBee\n");
     mainPlayer.sprite = createImage(img_beesprite0);
     mainPlayer.total_frames = 1;
-    mainPlayer.y_pos = 50;
-    mainPlayer.x_pos = 200;
-    //mainPlayer.sprite = moveImage(mainPlayer.sprite, mainPlayer.x_pos, mainPlayer.y_pos);
+    mainPlayer.y_pos = 0;
+    mainPlayer.x_pos = 0;
+    
 
     mainTimer = createTimer();
     while (1) {
         // printf("%i", mainTimer.vsync);
         clearDisplay();
         updateAnimation();
+        mainPlayer.sprite = moveImage(mainPlayer.sprite, mainPlayer.x_pos, mainPlayer.y_pos);
         drawImage(mainPlayer.sprite);
         in_update();
         flushDisplay(); // dump it to the screen

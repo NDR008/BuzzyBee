@@ -85,7 +85,6 @@ void in_update(void)
     input_pad = ~pad->btn;
     input_old = input_held;
     input_held = in_remap(input_pad);
-    printf("held: %i\n", IN_RIGHT);
     if (input_suppress_trig)
     {
         input_trig = 0;
