@@ -47,10 +47,13 @@ SOFTWARE.
 #define __stacksize 0x00004000
 
 // temp sprites
-Image ballSprite;
 Image playerSprite;
-Image bgSprite;
 
+typedef struct{
+    Image sprite;
+    int frame_n;
+    int total_frames;
+} animatedObject;
 // functions/routines in this file
 
 void initialize();
@@ -66,12 +69,6 @@ void initialize() {
 	initializeDebugFont();
 
     //init scene
-	ballSprite = createImage(img_ball);
-	ballSprite = scaleImage(ballSprite, 50, 50);
-	playerSprite = createImage(img_playerBar);
-	bgSprite = createImage(img_wall1);
-	bgSprite = scaleImage(bgSprite, 200, 200);
-	bgSprite = moveImage(bgSprite, 160, 120);
 }
 
 void gameScreen(){
