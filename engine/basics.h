@@ -28,6 +28,8 @@
 #define DEBUGMODE 1
 #define DEBUG 0
 
+extern int SCREEN_WIDTH, SCREEN_HEIGHT;
+
 typedef struct Color {
 	int r;
 	int g;
