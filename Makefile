@@ -4,6 +4,7 @@ TYPE = ps-exe
 SRCS = main.c \
 engine/basics.c \
 engine/input.c \
+engine/timerz.c \
 ../third_party/common/syscalls/printf.s \
 ../third_party/common/crt0/crt0.s \
 
