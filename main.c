@@ -85,7 +85,7 @@ void updateAnimation(){
         mainPlayer.current_sprite = moveImage(mainPlayer.current_sprite, mainPlayer.x_pos, mainPlayer.y_pos);
         return;
     }
-    if (mainTimer.vsync % 10 == 0) {
+    else if (mainTimer.vsync % 10 == 0) {
         mainPlayer.frame_n++;
         if (mainPlayer.frame_n > mainPlayer.total_frames){
             mainPlayer.frame_n = 0;
