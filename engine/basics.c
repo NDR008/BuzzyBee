@@ -200,7 +200,7 @@ void initializeScreen() {
 	clearVRAM();
 	GsInitGraph(SCREEN_WIDTH, SCREEN_HEIGHT, GsINTER|GsOFSGPU, 1, 0); //Set up interlation..
 	GsDefDispBuff(0, 0, 0, SCREEN_HEIGHT);	//..and double buffering.
-    GsInit3D();
+    //GsInit3D();
 	systemBackgroundColor = createColor(0, 0, 255);
 	initializeOrderingTable();
 }
