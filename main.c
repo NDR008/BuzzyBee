@@ -85,33 +85,37 @@ void initialize() {
 int buffer = 0;
 
 void updateAnimation(){
+    int factor = 16;    // a fudge for lack of floats
+
     // if we pressu jump...
     if (input_trig & PAD_UP) {
-        mainPlayer.y_vel -= 12;
-        if (mainPlayer.y_vel < -20) {
-            mainPlayer.y_vel = -20;
+        mainPlayer.y_vel -= 5*factor;
+        if (mainPlayer.y_vel < -5*factor) {
+            mainPlayer.y_vel = -5*factor;
         }
     }
 
     // constant desire to go down...
-    mainPlayer.y_vel += 1;
-    if (mainPlayer.y_vel > 5) {
-        mainPlayer.y_vel = 5;
+    mainPlayer.y_vel += 1*factor/8;
+    if (mainPlayer.y_vel > 2*factor/2) {
+        mainPlayer.y_vel = 2*factor/2;
     }
     
     // update position
-    mainPlayer.y_pos += mainPlayer.y_vel;
+    mainPlayer.y_pos += mainPlayer.y_vel / factor;
 
     // hover on the ground limit
     if (mainPlayer.y_pos > SCREEN_HEIGHT-20-mainPlayer.current_sprite.sprite.my){
         mainPlayer.y_pos = SCREEN_HEIGHT-20-mainPlayer.current_sprite.sprite.my;
+        //mainPlayer.y_vel = 0;
     }
     // stay within frame
     else if (mainPlayer.y_pos < 20+mainPlayer.current_sprite.sprite.my){
         mainPlayer.y_pos = 20+mainPlayer.current_sprite.sprite.my;
+        mainPlayer.y_vel = 0;
     }
 
-    // animate wings
+    // animate
     if (mainTimer.vsync % 4 == 0) {
         mainPlayer.frame_n++;
         mainPlayer.current_sprite = createImage(img_beepsrites[mainPlayer.frame_n % (mainPlayer.total_frames+1)]);
