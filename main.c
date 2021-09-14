@@ -85,6 +85,7 @@ void initialize() {
 int buffer = 0;
 
 void updateAnimation(){
+    // if we pressu jump...
     if (input_trig & PAD_UP) {
         mainPlayer.y_vel -= 12;
         if (mainPlayer.y_vel < -20) {
@@ -92,28 +93,31 @@ void updateAnimation(){
         }
     }
 
+    // constant desire to go down...
     mainPlayer.y_vel += 1;
     if (mainPlayer.y_vel > 5) {
         mainPlayer.y_vel = 5;
     }
     
+    // update position
     mainPlayer.y_pos += mainPlayer.y_vel;
 
+    // hover on the ground limit
     if (mainPlayer.y_pos > SCREEN_HEIGHT-20-mainPlayer.current_sprite.sprite.my){
         mainPlayer.y_pos = SCREEN_HEIGHT-20-mainPlayer.current_sprite.sprite.my;
     }
+    // stay within frame
     else if (mainPlayer.y_pos < 20+mainPlayer.current_sprite.sprite.my){
         mainPlayer.y_pos = 20+mainPlayer.current_sprite.sprite.my;
     }
 
+    // animate wings
     if (mainTimer.vsync % 4 == 0) {
         mainPlayer.frame_n++;
         mainPlayer.current_sprite = createImage(img_beepsrites[mainPlayer.frame_n % (mainPlayer.total_frames+1)]);
     }
 
     mainPlayer.current_sprite = moveImage(mainPlayer.current_sprite, mainPlayer.x_pos, mainPlayer.y_pos);
-
-
 }
 
 
