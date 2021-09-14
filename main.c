@@ -59,10 +59,14 @@ typedef struct{
     int total_frames;
     int y_pos;
     int x_pos;
+    int x_vel;
+    int y_vel;
 } animatedObject;
 
 animatedObject mainPlayer;
-// functions/routines in this file
+
+unsigned char *img_beepsrites[] = { img_beesprite0, img_beesprite1 };
+//unsigned char *img_beepsrites[2] = { &img_beesprite0, &img_beesprite1 };
 
 void initialize();
 void startScreen();
@@ -76,31 +80,40 @@ void initialize() {
 	setBackgroundColor(createColor(30, 30, 30));
 	initializeDebugFont();
 
-    //init scene
+    //load sprites
 }
+int buffer = 0;
 
 void updateAnimation(){
     if (input_trig & PAD_UP) {
-        mainPlayer.y_pos -= 10;
-        mainPlayer.current_sprite = moveImage(mainPlayer.current_sprite, mainPlayer.x_pos, mainPlayer.y_pos);
-        return;
+        mainPlayer.y_vel -= 12;
+        if (mainPlayer.y_vel < -20) {
+            mainPlayer.y_vel = -20;
+        }
     }
-    else if (mainTimer.vsync % 10 == 0) {
+
+    mainPlayer.y_vel += 1;
+    if (mainPlayer.y_vel > 5) {
+        mainPlayer.y_vel = 5;
+    }
+    
+    mainPlayer.y_pos += mainPlayer.y_vel;
+
+    if (mainPlayer.y_pos > SCREEN_HEIGHT-20-mainPlayer.current_sprite.sprite.my){
+        mainPlayer.y_pos = SCREEN_HEIGHT-20-mainPlayer.current_sprite.sprite.my;
+    }
+    else if (mainPlayer.y_pos < 20+mainPlayer.current_sprite.sprite.my){
+        mainPlayer.y_pos = 20+mainPlayer.current_sprite.sprite.my;
+    }
+
+    if (mainTimer.vsync % 4 == 0) {
         mainPlayer.frame_n++;
-        if (mainPlayer.frame_n > mainPlayer.total_frames){
-            mainPlayer.frame_n = 0;
-            mainPlayer.current_sprite = createImage(img_beesprite0);
-        }
-        else {
-            mainPlayer.current_sprite = createImage(img_beesprite1);
-        }
+        mainPlayer.current_sprite = createImage(img_beepsrites[mainPlayer.frame_n % (mainPlayer.total_frames+1)]);
     }
-    else if (mainTimer.vsync % 5 == 0) {
-            mainPlayer.y_pos += 5;
-            if (mainPlayer.y_pos > SCREEN_HEIGHT-20-mainPlayer.current_sprite.sprite.my){
-                mainPlayer.y_pos = SCREEN_HEIGHT-20-mainPlayer.current_sprite.sprite.my;
-            }
-    }
+
+    mainPlayer.current_sprite = moveImage(mainPlayer.current_sprite, mainPlayer.x_pos, mainPlayer.y_pos);
+
+
 }
 
 
@@ -109,11 +122,12 @@ void gameScreen(){
 
 int main() {
     initialize();
-    printf("BuzzyBee\n");
-    mainPlayer.current_sprite = createImage(img_beesprite0);
+    printf("BuzzyBee v0.1\n");
+    mainPlayer.current_sprite = createImage(img_beepsrites[0]);
     mainPlayer.total_frames = 1;
-    mainPlayer.y_pos = 20+mainPlayer.current_sprite.sprite.h;
+    mainPlayer.y_pos = 50+mainPlayer.current_sprite.sprite.h;
     mainPlayer.x_pos = 150;
+    mainPlayer.y_vel, mainPlayer.x_vel = 0;
     Box frame;
     frame = createBox(createColor(200, 155, 155), 20, 20, 320-20, 240-20);
 
