@@ -65,7 +65,7 @@ typedef struct{
 
 animatedObject mainPlayer;
 
-unsigned char *img_beepsrites[] = { img_beesprite0, img_beesprite1 };
+unsigned char *img_beepsrites[] = { img_bee_0, img_bee_1, img_bee_2, img_bee_1 };
 //unsigned char *img_beepsrites[2] = { &img_beesprite0, &img_beesprite1 };
 
 void initialize();
@@ -118,7 +118,7 @@ void updateAnimation(){
     // animate
     if (mainTimer.vsync % 4 == 0) {
         mainPlayer.frame_n++;
-        mainPlayer.current_sprite = createImage(img_beepsrites[mainPlayer.frame_n % (mainPlayer.total_frames+1)]);
+        mainPlayer.current_sprite = createImage(img_beepsrites[mainPlayer.frame_n % (mainPlayer.total_frames)]);
     }
 
     mainPlayer.current_sprite = moveImage(mainPlayer.current_sprite, mainPlayer.x_pos, mainPlayer.y_pos);
@@ -132,7 +132,7 @@ int main() {
     initialize();
     printf("BuzzyBee v0.1\n");
     mainPlayer.current_sprite = createImage(img_beepsrites[0]);
-    mainPlayer.total_frames = 1;
+    mainPlayer.total_frames = 4;
     mainPlayer.y_pos = 50+mainPlayer.current_sprite.sprite.h;
     mainPlayer.x_pos = 150;
     mainPlayer.y_vel, mainPlayer.x_vel = 0;

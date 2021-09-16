@@ -9,6 +9,8 @@
         "libetc.h": "c",
         "stdio.h": "c",
         "libgte.h": "c",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "images.h": "c",
+        "basics.h": "c"
     }
 }
