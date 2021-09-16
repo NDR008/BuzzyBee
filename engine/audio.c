@@ -18,6 +18,7 @@ void audioInit() {
 	l_c_attr.mvol.left  = 0x3fff; // set master left volume
 	l_c_attr.mvol.right = 0x3fff; // set master right volume
 	SpuSetCommonAttr (&l_c_attr);
+    SpuSetIRQ(SPU_OFF);
 }
 
 void audioTransferVagToSPU(char* sound, int sound_size, int voice_channel) {
