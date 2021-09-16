@@ -68,7 +68,6 @@ void audioPlay(int voice_channel) {
 
 void audioChannelConfigure() {
 	// mask which specific voice attributes are to be set
-
 }
 
 void audioFree(unsigned long sound_address) {

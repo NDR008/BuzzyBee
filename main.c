@@ -84,10 +84,11 @@ void initialize() {
     audioInit();
 
     in_init();  // init inputs
+    in_update();
 	//initializeDebugFont();
     initPlayer();
     
-    audioTransferVagToSPU(buzz1, buzz1_size, SPU_0CH);
+    audioTransferVagToSPU(buzz1, buzz1_size, SPU_1CH);
 
     //load sprites
 }
@@ -106,7 +107,7 @@ void updateAnimation(){
     
     // if we pressu jump...
     if (input_trig & IN_JUMP) {
-        //audioPlay(SPU_0CH);
+        audioPlay(SPU_1CH);
         mainPlayer.y_vel -= MAXFLAP;
         if (mainPlayer.y_vel < -MAXFLAP) {
             mainPlayer.y_vel = MAXFLAP;
