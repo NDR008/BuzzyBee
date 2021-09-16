@@ -84,7 +84,7 @@ void initialize() {
     audioInit();
 
     in_init();  // init inputs
-    in_update();
+    in_update(); // should not be needed but there is a bug without it
 	//initializeDebugFont();
     initPlayer();
     
