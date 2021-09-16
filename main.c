@@ -41,6 +41,7 @@ SOFTWARE.
 #include "engine/basics.h"
 #include "engine/input.h"
 #include "engine/timerz.h"
+#include "engine/audio.h"
 #include "sound/sfx/buzz1.h"
 
 // Global system
@@ -84,8 +85,7 @@ void initialize() {
 	initializeDebugFont();
 
     audioInit();
-    audioTransferVagToSPU(&buzz1, buzz1_size, SPU_0CH);
-    audioPlay(SPU_0CH);
+    audioTransferVagToSPU(buzz1, buzz1_size, SPU_0CH);
 
     //load sprites
 }
@@ -104,6 +104,7 @@ void updateAnimation(){
     
     // if we pressu jump...
     if (input_trig & PAD_UP) {
+        audioPlay(SPU_0CH);
         mainPlayer.y_vel -= MAXFLAP;
         if (mainPlayer.y_vel < -MAXFLAP) {
             mainPlayer.y_vel = MAXFLAP;
@@ -142,15 +143,21 @@ void updateAnimation(){
 void gameScreen(){
 }
 
+void initPlayer(){
+    mainPlayer.current_sprite = createImage(img_beepsrites[0]);
+    mainPlayer.total_frames = 4;
+    mainPlayer.y_pos = GROUND * factor;
+    mainPlayer.x_pos = (SCREEN_WIDTH / 2) * factor;
+    mainPlayer.y_vel, mainPlayer.x_vel = 0;
+    mainPlayer.anim_rate = 4;
+}
+
 int main() {
     initialize();
     printf("BuzzyBee v0.1\n");
-    mainPlayer.current_sprite = createImage(img_beepsrites[0]);
-    mainPlayer.total_frames = 4;
-    mainPlayer.y_pos = 50+mainPlayer.current_sprite.sprite.h;
-    mainPlayer.x_pos = 150 * factor;
-    mainPlayer.y_vel, mainPlayer.x_vel = 0;
-    mainPlayer.anim_rate = 4;
+
+    initPlayer();
+
     Box frame;
     frame = createBox(createColor(200, 155, 155), 20, 20, 320-20, 240-20);
 
