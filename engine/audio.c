@@ -10,7 +10,10 @@ unsigned long l_vag1_spu_addr;
 
 void audioInit() {
 	SpuInit();
-	SpuInitMalloc (SOUND_MALLOC_MAX, SPU_MALLOC_RECSIZ * (SOUND_MALLOC_MAX + 1));
+	//SpuInitMalloc (SOUND_MALLOC_MAX, SPU_MALLOC_RECSIZ * (SOUND_MALLOC_MAX + 1));
+    static char spuMallocArea[SPU_MALLOC_RECSIZ * (SOUND_MALLOC_MAX + 1)];
+
+    SpuInitMalloc(SOUND_MALLOC_MAX, spuMallocArea);
 	l_c_attr.mask = (SPU_COMMON_MVOLL | SPU_COMMON_MVOLR);
 	l_c_attr.mvol.left  = 0x3fff; // set master left volume
 	l_c_attr.mvol.right = 0x3fff; // set master right volume

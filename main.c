@@ -75,16 +75,18 @@ unsigned char *img_beepsrites[] = { img_bee_0, img_bee_1, img_bee_2, img_bee_1 }
 void initialize();
 void startScreen();
 void gameScreen();
+void initPlayer();
 
 void initialize() {
 	initializeScreen();
-	//PadInit(0);	
-    in_init();
-
-	setBackgroundColor(createColor(30, 30, 30));
-	initializeDebugFont();
+    setBackgroundColor(createColor(30, 30, 30));
 
     audioInit();
+
+    in_init();  // init inputs
+	//initializeDebugFont();
+    initPlayer();
+    
     audioTransferVagToSPU(buzz1, buzz1_size, SPU_0CH);
 
     //load sprites
@@ -103,8 +105,8 @@ void initialize() {
 void updateAnimation(){
     
     // if we pressu jump...
-    if (input_trig & PAD_UP) {
-        audioPlay(SPU_0CH);
+    if (input_trig & IN_JUMP) {
+        //audioPlay(SPU_0CH);
         mainPlayer.y_vel -= MAXFLAP;
         if (mainPlayer.y_vel < -MAXFLAP) {
             mainPlayer.y_vel = MAXFLAP;
@@ -156,20 +158,18 @@ int main() {
     initialize();
     printf("BuzzyBee v0.1\n");
 
-    initPlayer();
-
     Box frame;
     frame = createBox(createColor(200, 155, 155), 20, 20, 320-20, 240-20);
-
     mainTimer = createTimer();
+
     while (1) {
-        // printf("%i", mainTimer.vsync);
+        in_update();
         clearDisplay();
+
         updateAnimation();
         //mainPlayer.current_sprite = moveImage(mainPlayer.current_sprite, mainPlayer.x_pos/, mainPlayer.y_pos);
         drawImage(mainPlayer.current_sprite);
         drawBox(frame);
-        in_update();
         flushDisplay(); // dump it to the screen
         mainTimer = incTimer(mainTimer);
     }
