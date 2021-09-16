@@ -36,10 +36,12 @@ SOFTWARE.
 #include <libgte.h>
 #include <libgpu.h>
 #include <libgs.h>
+#include <libspu.h>
 #include "libs/images.h"
 #include "engine/basics.h"
 #include "engine/input.h"
 #include "engine/timerz.h"
+#include "sound/sfx/buzz1.h"
 
 // Global system
 #define OT_LENGTH 1
@@ -61,6 +63,7 @@ typedef struct{
     int x_pos;
     int x_vel;
     int y_vel;
+    int anim_rate; // how many vsyncs
 } animatedObject;
 
 animatedObject mainPlayer;
@@ -80,48 +83,59 @@ void initialize() {
 	setBackgroundColor(createColor(30, 30, 30));
 	initializeDebugFont();
 
+    audioInit();
+    audioTransferVagToSPU(&buzz1, buzz1_size, SPU_0CH);
+    audioPlay(SPU_0CH);
+
     //load sprites
 }
-int buffer = 0;
+#define factor 1024
+#define GRAVITY factor / 8
+#define MAXSPEED factor
+
+#define MAXFLAP 5 * factor
+
+#define SPRITEHEIGHT 30
+#define GROUND (SCREEN_HEIGHT-20-30) * factor
+
+#define CEILING (SPRITEHEIGHT)
 
 void updateAnimation(){
-    int factor = 16;    // a fudge for lack of floats
-
+    
     // if we pressu jump...
     if (input_trig & PAD_UP) {
-        mainPlayer.y_vel -= 5*factor;
-        if (mainPlayer.y_vel < -5*factor) {
-            mainPlayer.y_vel = -5*factor;
+        mainPlayer.y_vel -= MAXFLAP;
+        if (mainPlayer.y_vel < -MAXFLAP) {
+            mainPlayer.y_vel = MAXFLAP;
         }
     }
 
     // constant desire to go down...
-    mainPlayer.y_vel += 1*factor/8;
-    if (mainPlayer.y_vel > 2*factor/2) {
-        mainPlayer.y_vel = 2*factor/2;
+    mainPlayer.y_vel += GRAVITY;
+    if (mainPlayer.y_vel > MAXSPEED) {
+        mainPlayer.y_vel = MAXSPEED;
     }
     
     // update position
-    mainPlayer.y_pos += mainPlayer.y_vel / factor;
+    mainPlayer.y_pos += mainPlayer.y_vel;
 
     // hover on the ground limit
-    if (mainPlayer.y_pos > SCREEN_HEIGHT-20-mainPlayer.current_sprite.sprite.my){
-        mainPlayer.y_pos = SCREEN_HEIGHT-20-mainPlayer.current_sprite.sprite.my;
-        //mainPlayer.y_vel = 0;
+    if (mainPlayer.y_pos > GROUND){
+        mainPlayer.y_pos = GROUND;        
     }
     // stay within frame
-    else if (mainPlayer.y_pos < 20+mainPlayer.current_sprite.sprite.my){
-        mainPlayer.y_pos = 20+mainPlayer.current_sprite.sprite.my;
+    else if (mainPlayer.y_pos < CEILING){
+        mainPlayer.y_pos = CEILING;
         mainPlayer.y_vel = 0;
     }
 
     // animate
-    if (mainTimer.vsync % 4 == 0) {
+    if (mainTimer.vsync % mainPlayer.anim_rate == 0) {
         mainPlayer.frame_n++;
         mainPlayer.current_sprite = createImage(img_beepsrites[mainPlayer.frame_n % (mainPlayer.total_frames)]);
     }
 
-    mainPlayer.current_sprite = moveImage(mainPlayer.current_sprite, mainPlayer.x_pos, mainPlayer.y_pos);
+    mainPlayer.current_sprite = moveImage(mainPlayer.current_sprite, mainPlayer.x_pos / factor, mainPlayer.y_pos /factor);
 }
 
 
@@ -134,8 +148,9 @@ int main() {
     mainPlayer.current_sprite = createImage(img_beepsrites[0]);
     mainPlayer.total_frames = 4;
     mainPlayer.y_pos = 50+mainPlayer.current_sprite.sprite.h;
-    mainPlayer.x_pos = 150;
+    mainPlayer.x_pos = 150 * factor;
     mainPlayer.y_vel, mainPlayer.x_vel = 0;
+    mainPlayer.anim_rate = 4;
     Box frame;
     frame = createBox(createColor(200, 155, 155), 20, 20, 320-20, 240-20);
 
@@ -144,7 +159,7 @@ int main() {
         // printf("%i", mainTimer.vsync);
         clearDisplay();
         updateAnimation();
-        mainPlayer.current_sprite = moveImage(mainPlayer.current_sprite, mainPlayer.x_pos, mainPlayer.y_pos);
+        //mainPlayer.current_sprite = moveImage(mainPlayer.current_sprite, mainPlayer.x_pos/, mainPlayer.y_pos);
         drawImage(mainPlayer.current_sprite);
         drawBox(frame);
         in_update();
