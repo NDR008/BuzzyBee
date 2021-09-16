@@ -36,10 +36,12 @@ SOFTWARE.
 #include <libgte.h>
 #include <libgpu.h>
 #include <libgs.h>
+#include <libspu.h>
 #include "libs/images.h"
 #include "engine/basics.h"
 #include "engine/input.h"
 #include "engine/timerz.h"
+#include "sound/sfx/buzz1.h"
 
 // Global system
 #define OT_LENGTH 1
@@ -80,6 +82,10 @@ void initialize() {
 
 	setBackgroundColor(createColor(30, 30, 30));
 	initializeDebugFont();
+
+    audioInit();
+    audioTransferVagToSPU(&buzz1, buzz1_size, SPU_0CH);
+    audioPlay(SPU_0CH);
 
     //load sprites
 }
