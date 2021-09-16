@@ -29,9 +29,9 @@ Archive member included to satisfy reference by file (symbol)
 ../third_party/psyq/lib/libc.a(c63.o)
                               main.o (printf)
 ../third_party/psyq/lib/libetc.a(vmode.o)
-                              engine/basics.o (GetVideoMode)
+                              engine/graphics.o (GetVideoMode)
 ../third_party/psyq/lib/libetc.a(vsync.o)
-                              engine/basics.o (VSync)
+                              engine/graphics.o (VSync)
 ../third_party/psyq/lib/libetc.a(intr_vb.o)
                               ../third_party/psyq/lib/libetc.a(vsync.o) (Vcount)
 ../third_party/psyq/lib/libetc.a(intr.o)
@@ -39,9 +39,9 @@ Archive member included to satisfy reference by file (symbol)
 ../third_party/psyq/lib/libetc.a(intr_dma.o)
                               ../third_party/psyq/lib/libetc.a(intr.o) (startIntrDMA)
 ../third_party/psyq/lib/libgpu.a(font.o)
-                              engine/basics.o (FntFlush)
+                              engine/graphics.o (FntFlush)
 ../third_party/psyq/lib/libgpu.a(p00.o)
-                              engine/basics.o (GetTPage)
+                              engine/graphics.o (GetTPage)
 ../third_party/psyq/lib/libgpu.a(p06.o)
                               ../third_party/psyq/lib/libgpu.a(font.o) (AddPrim)
 ../third_party/psyq/lib/libgpu.a(p09.o)
@@ -53,11 +53,11 @@ Archive member included to satisfy reference by file (symbol)
 ../third_party/psyq/lib/libgpu.a(p26.o)
                               ../third_party/psyq/lib/libgpu.a(font.o) (SetTile)
 ../third_party/psyq/lib/libgpu.a(p27.o)
-                              engine/basics.o (SetLineF2)
+                              engine/graphics.o (SetLineF2)
 ../third_party/psyq/lib/libgpu.a(p41.o)
                               ../third_party/psyq/lib/libgpu.a(font.o) (SetDrawMode)
 ../third_party/psyq/lib/libgpu.a(sys.o)
-                              engine/basics.o (ClearImage2)
+                              engine/graphics.o (ClearImage2)
 ../third_party/psyq/lib/libgpu.a(e00.o)
                               ../third_party/psyq/lib/libgpu.a(font.o) (LoadTPage)
 ../third_party/psyq/lib/libgpu.a(e02.o)
@@ -65,35 +65,35 @@ Archive member included to satisfy reference by file (symbol)
 ../third_party/psyq/lib/libgpu.a(p01.o)
                               ../third_party/psyq/lib/libgpu.a(e02.o) (GetClut)
 ../third_party/psyq/lib/libgs.a(2d_sp0.o)
-                              engine/basics.o (GsSortSprite)
+                              engine/graphics.o (GsSortSprite)
 ../third_party/psyq/lib/libgs.a(global.o)
                               ../third_party/psyq/lib/libgs.a(2d_sp0.o) (GsOUT_PACKET_P)
 ../third_party/psyq/lib/libgs.a(gs_001.o)
                               ../third_party/psyq/lib/libgs.a(2d_sp0.o) (GsORGOFSY)
 ../third_party/psyq/lib/libgs.a(gs_0021.o)
-                              engine/basics.o (GsGetActiveBuff)
+                              engine/graphics.o (GsGetActiveBuff)
 ../third_party/psyq/lib/libgs.a(gs_0022.o)
                               ../third_party/psyq/lib/libgs.a(gs_001.o) (GsSetDrawBuffOffset)
 ../third_party/psyq/lib/libgs.a(gs_003.o)
                               ../third_party/psyq/lib/libgs.a(gs_001.o) (GsSetDrawBuffClip)
 ../third_party/psyq/lib/libgs.a(gs_010.o)
-                              engine/basics.o (GsSwapDispBuff)
+                              engine/graphics.o (GsSwapDispBuff)
 ../third_party/psyq/lib/libgs.a(gs_103.o)
-                              engine/basics.o (GsDefDispBuff)
+                              engine/graphics.o (GsDefDispBuff)
 ../third_party/psyq/lib/libgs.a(gs_104.o)
                               ../third_party/psyq/lib/libgs.a(gs_001.o) (HWD0)
 ../third_party/psyq/lib/libgs.a(gs_107.o)
                               ../third_party/psyq/lib/libgs.a(gs_001.o) (GsLIGHTWSMATRIX)
 ../third_party/psyq/lib/libgs.a(gs_111.o)
-                              engine/basics.o (GsDrawOt)
+                              engine/graphics.o (GsDrawOt)
 ../third_party/psyq/lib/libgs.a(gs_113.o)
-                              engine/basics.o (GsClearOt)
+                              engine/graphics.o (GsClearOt)
 ../third_party/psyq/lib/libgs.a(gs_121.o)
                               ../third_party/psyq/lib/libgs.a(gs_001.o) (gte_init)
 ../third_party/psyq/lib/libgs.a(gs_122.o)
-                              engine/basics.o (GsGetTimInfo)
+                              engine/graphics.o (GsGetTimInfo)
 ../third_party/psyq/lib/libgs.a(gs_124.o)
-                              engine/basics.o (GsSetWorkBase)
+                              engine/graphics.o (GsSetWorkBase)
 ../third_party/psyq/lib/libgs.a(gs_128.o)
                               ../third_party/psyq/lib/libgs.a(2d_sp0.o) (GsIDMATRIX)
 ../third_party/psyq/lib/libgs.a(2d_com1.o)
@@ -204,20 +204,20 @@ playerSprite        0x50              main.o
 l_vag1_spu_addr     0x4               engine/audio.o
 input_trig          0x4               engine/input.o
 mainPlayer          0x6c              main.o
-SCREEN_WIDTH        0x4               engine/basics.o
+SCREEN_WIDTH        0x4               engine/graphics.o
 input_binds         0x1c              engine/input.o
-GPUOutputPacket     0x258             engine/basics.o
+GPUOutputPacket     0x258             engine/graphics.o
 l_c_attr            0x28              engine/audio.o
-SCREEN_HEIGHT       0x4               engine/basics.o
-currentBuffer       0x2               engine/basics.o
+SCREEN_HEIGHT       0x4               engine/graphics.o
+currentBuffer       0x2               engine/graphics.o
 input_held          0x4               engine/input.o
 systemBackgroundColor
-                    0xc               engine/basics.o
+                    0xc               engine/graphics.o
 input_suppress_trig
                     0x1               engine/input.o
 mainTimer           0x10              main.o
-orderingTable       0x28              engine/basics.o
-minorOrderingTable  0x10              engine/basics.o
+orderingTable       0x28              engine/graphics.o
+minorOrderingTable  0x10              engine/graphics.o
 
 Discarded input sections
 
@@ -229,26 +229,26 @@ Discarded input sections
  .pdr           0x0000000000000000       0xa0 main.o
  .text.gameScreen
                 0x0000000000000000        0x8 main.o
- .text          0x0000000000000000        0x0 engine/basics.o
- .data          0x0000000000000000        0x0 engine/basics.o
- .bss           0x0000000000000000        0x0 engine/basics.o
- .reginfo       0x0000000000000000       0x18 engine/basics.o
+ .text          0x0000000000000000        0x0 engine/graphics.o
+ .data          0x0000000000000000        0x0 engine/graphics.o
+ .bss           0x0000000000000000        0x0 engine/graphics.o
+ .reginfo       0x0000000000000000       0x18 engine/graphics.o
  .MIPS.abiflags
-                0x0000000000000000       0x18 engine/basics.o
- .pdr           0x0000000000000000      0x2c0 engine/basics.o
+                0x0000000000000000       0x18 engine/graphics.o
+ .pdr           0x0000000000000000      0x2c0 engine/graphics.o
  .text.scaleImage
-                0x0000000000000000       0x74 engine/basics.o
+                0x0000000000000000       0x74 engine/graphics.o
  .text.rotImage
-                0x0000000000000000       0x40 engine/basics.o
+                0x0000000000000000       0x40 engine/graphics.o
  .text.moveLine
-                0x0000000000000000       0x50 engine/basics.o
- .text.moveBox  0x0000000000000000      0x1a8 engine/basics.o
+                0x0000000000000000       0x50 engine/graphics.o
+ .text.moveBox  0x0000000000000000      0x1a8 engine/graphics.o
  .text.transposeBox
-                0x0000000000000000       0x34 engine/basics.o
+                0x0000000000000000       0x34 engine/graphics.o
  .text.drawLine
-                0x0000000000000000       0x30 engine/basics.o
+                0x0000000000000000       0x30 engine/graphics.o
  .text.initializeDebugFont
-                0x0000000000000000       0x44 engine/basics.o
+                0x0000000000000000       0x44 engine/graphics.o
  .text          0x0000000000000000        0x0 engine/input.o
  .data          0x0000000000000000        0x0 engine/input.o
  .reginfo       0x0000000000000000       0x18 engine/input.o
@@ -314,7 +314,7 @@ dcache           0x000000001f800000 0x0000000000000400
 Linker script and memory map
 
 LOAD main.o
-LOAD engine/basics.o
+LOAD engine/graphics.o
 LOAD engine/input.o
 LOAD engine/timerz.o
 LOAD engine/audio.o
@@ -405,47 +405,47 @@ END GROUP
                 0x000000008001043c       0x78 main.o
                 0x000000008001043c                initialize
  .text.setScreenMode.part.0
-                0x00000000800104b4       0x64 engine/basics.o
+                0x00000000800104b4       0x64 engine/graphics.o
  .text.createImage
-                0x0000000080010518      0x10c engine/basics.o
+                0x0000000080010518      0x10c engine/graphics.o
                 0x0000000080010518                createImage
  .text.moveImage
-                0x0000000080010624       0x44 engine/basics.o
+                0x0000000080010624       0x44 engine/graphics.o
                 0x0000000080010624                moveImage
  .text.drawImage
-                0x0000000080010668       0x60 engine/basics.o
+                0x0000000080010668       0x60 engine/graphics.o
                 0x0000000080010668                drawImage
  .text.createColor
-                0x00000000800106c8       0x14 engine/basics.o
+                0x00000000800106c8       0x14 engine/graphics.o
                 0x00000000800106c8                createColor
  .text.createLine
-                0x00000000800106dc       0x8c engine/basics.o
+                0x00000000800106dc       0x8c engine/graphics.o
                 0x00000000800106dc                createLine
  .text.createBox
-                0x0000000080010768      0x12c engine/basics.o
+                0x0000000080010768      0x12c engine/graphics.o
                 0x0000000080010768                createBox
- .text.drawBox  0x0000000080010894       0x48 engine/basics.o
+ .text.drawBox  0x0000000080010894       0x48 engine/graphics.o
                 0x0000000080010894                drawBox
  .text.setScreenMode
-                0x00000000800108dc       0x70 engine/basics.o
+                0x00000000800108dc       0x70 engine/graphics.o
                 0x00000000800108dc                setScreenMode
  .text.setBackgroundColor
-                0x000000008001094c       0x24 engine/basics.o
+                0x000000008001094c       0x24 engine/graphics.o
                 0x000000008001094c                setBackgroundColor
  .text.initializeOrderingTable
-                0x0000000080010970       0x90 engine/basics.o
+                0x0000000080010970       0x90 engine/graphics.o
                 0x0000000080010970                initializeOrderingTable
  .text.flushDisplay
-                0x0000000080010a00       0x90 engine/basics.o
+                0x0000000080010a00       0x90 engine/graphics.o
                 0x0000000080010a00                flushDisplay
  .text.clearDisplay
-                0x0000000080010a90       0x74 engine/basics.o
+                0x0000000080010a90       0x74 engine/graphics.o
                 0x0000000080010a90                clearDisplay
  .text.clearVRAM
-                0x0000000080010b04       0x44 engine/basics.o
+                0x0000000080010b04       0x44 engine/graphics.o
                 0x0000000080010b04                clearVRAM
  .text.initializeScreen
-                0x0000000080010b48       0xac engine/basics.o
+                0x0000000080010b48       0xac engine/graphics.o
                 0x0000000080010b48                initializeScreen
  .text.in_init  0x0000000080010bf4       0x68 engine/input.o
                 0x0000000080010bf4                in_init
@@ -718,7 +718,7 @@ END GROUP
                                          0x10 (size before relaxing)
  *fill*         0x000000008001972f        0x1 
  .rodata.str1.4
-                0x0000000080019730       0x80 engine/basics.o
+                0x0000000080019730       0x80 engine/graphics.o
  .rodata        0x00000000800197b0       0x20 engine/input.o
                 0x00000000800197b0                input_binds_default
  .rodata        0x00000000800197d0       0x10 ../third_party/common/crt0/crt0.o
@@ -852,7 +852,7 @@ END GROUP
  *(.dynsbss)
  *(.sbss .sbss.* .gnu.linkonce.sb.*)
  *(.scommon)
- .scommon       0x0000000080022800        0xa engine/basics.o
+ .scommon       0x0000000080022800        0xa engine/graphics.o
                 0x0000000080022800                SCREEN_WIDTH
                 0x0000000080022804                SCREEN_HEIGHT
                 0x0000000080022808                currentBuffer
@@ -925,7 +925,7 @@ END GROUP
                 0x0000000080028774                playerSprite
                 0x00000000800287c4                mainPlayer
                 0x0000000080028830                mainTimer
- COMMON         0x0000000080028840      0x29c engine/basics.o
+ COMMON         0x0000000080028840      0x29c engine/graphics.o
                 0x0000000080028840                GPUOutputPacket
                 0x0000000080028a98                systemBackgroundColor
                 0x0000000080028aa4                orderingTable
@@ -956,7 +956,7 @@ OUTPUT(BuzzyBee.elf elf32-tradlittlemips)
 
 .mdebug.abi32   0x0000000000000000        0x0
  .mdebug.abi32  0x0000000000000000        0x0 main.o
- .mdebug.abi32  0x0000000000000000        0x0 engine/basics.o
+ .mdebug.abi32  0x0000000000000000        0x0 engine/graphics.o
  .mdebug.abi32  0x0000000000000000        0x0 engine/input.o
  .mdebug.abi32  0x0000000000000000        0x0 engine/timerz.o
  .mdebug.abi32  0x0000000000000000        0x0 engine/audio.o
@@ -964,7 +964,7 @@ OUTPUT(BuzzyBee.elf elf32-tradlittlemips)
 .comment        0x0000000000000000       0x2a
  .comment       0x0000000000000000       0x2a main.o
                                          0x2b (size before relaxing)
- .comment       0x000000000000002a       0x2b engine/basics.o
+ .comment       0x000000000000002a       0x2b engine/graphics.o
  .comment       0x000000000000002a       0x2b engine/input.o
  .comment       0x000000000000002a       0x2b engine/timerz.o
  .comment       0x000000000000002a       0x2b engine/audio.o
@@ -974,7 +974,7 @@ OUTPUT(BuzzyBee.elf elf32-tradlittlemips)
  .gnu.attributes
                 0x0000000000000000       0x10 main.o
  .gnu.attributes
-                0x0000000000000010       0x10 engine/basics.o
+                0x0000000000000010       0x10 engine/graphics.o
  .gnu.attributes
                 0x0000000000000020       0x10 engine/input.o
  .gnu.attributes
@@ -1088,7 +1088,7 @@ OUTPUT(BuzzyBee.elf elf32-tradlittlemips)
 
 .debug_info     0x0000000000000000     0x322f
  .debug_info    0x0000000000000000      0xe9c main.o
- .debug_info    0x0000000000000e9c     0x1861 engine/basics.o
+ .debug_info    0x0000000000000e9c     0x1861 engine/graphics.o
  .debug_info    0x00000000000026fd      0x4bd engine/input.o
  .debug_info    0x0000000000002bba      0x14b engine/timerz.o
  .debug_info    0x0000000000002d05      0x504 engine/audio.o
@@ -1096,7 +1096,7 @@ OUTPUT(BuzzyBee.elf elf32-tradlittlemips)
 
 .debug_abbrev   0x0000000000000000      0xaed
  .debug_abbrev  0x0000000000000000      0x23d main.o
- .debug_abbrev  0x000000000000023d      0x3bc engine/basics.o
+ .debug_abbrev  0x000000000000023d      0x3bc engine/graphics.o
  .debug_abbrev  0x00000000000005f9      0x229 engine/input.o
  .debug_abbrev  0x0000000000000822      0x127 engine/timerz.o
  .debug_abbrev  0x0000000000000949      0x190 engine/audio.o
@@ -1106,7 +1106,7 @@ OUTPUT(BuzzyBee.elf elf32-tradlittlemips)
  .debug_aranges
                 0x0000000000000000       0x40 main.o
  .debug_aranges
-                0x0000000000000040       0xc8 engine/basics.o
+                0x0000000000000040       0xc8 engine/graphics.o
  .debug_aranges
                 0x0000000000000108       0x28 engine/input.o
  .debug_aranges
@@ -1118,41 +1118,41 @@ OUTPUT(BuzzyBee.elf elf32-tradlittlemips)
 
 .debug_ranges   0x0000000000000000      0x178
  .debug_ranges  0x0000000000000000       0x30 main.o
- .debug_ranges  0x0000000000000030       0xd0 engine/basics.o
+ .debug_ranges  0x0000000000000030       0xd0 engine/graphics.o
  .debug_ranges  0x0000000000000100       0x30 engine/input.o
  .debug_ranges  0x0000000000000130       0x18 engine/timerz.o
  .debug_ranges  0x0000000000000148       0x30 engine/audio.o
 
-.debug_line     0x0000000000000000      0xebb
- .debug_line    0x0000000000000000      0x323 main.o
- .debug_line    0x0000000000000323      0x79c engine/basics.o
- .debug_line    0x0000000000000abf      0x14b engine/input.o
- .debug_line    0x0000000000000c0a       0xfd engine/timerz.o
- .debug_line    0x0000000000000d07      0x151 engine/audio.o
- .debug_line    0x0000000000000e58       0x63 ../third_party/common/crt0/crt0.o
+.debug_line     0x0000000000000000      0xec1
+ .debug_line    0x0000000000000000      0x325 main.o
+ .debug_line    0x0000000000000325      0x7a0 engine/graphics.o
+ .debug_line    0x0000000000000ac5      0x14b engine/input.o
+ .debug_line    0x0000000000000c10       0xfd engine/timerz.o
+ .debug_line    0x0000000000000d0d      0x151 engine/audio.o
+ .debug_line    0x0000000000000e5e       0x63 ../third_party/common/crt0/crt0.o
 
-.debug_str      0x0000000000000000      0xcf2
+.debug_str      0x0000000000000000      0xcf4
  .debug_str     0x0000000000000000      0x712 main.o
                                         0x775 (size before relaxing)
- .debug_str     0x0000000000000712      0x288 engine/basics.o
-                                        0x6ec (size before relaxing)
- .debug_str     0x000000000000099a      0x11e engine/input.o
+ .debug_str     0x0000000000000712      0x28a engine/graphics.o
+                                        0x6ee (size before relaxing)
+ .debug_str     0x000000000000099c      0x11e engine/input.o
                                         0x3a8 (size before relaxing)
- .debug_str     0x0000000000000ab8       0x16 engine/timerz.o
+ .debug_str     0x0000000000000aba       0x16 engine/timerz.o
                                         0x1dc (size before relaxing)
- .debug_str     0x0000000000000ace      0x1db engine/audio.o
+ .debug_str     0x0000000000000ad0      0x1db engine/audio.o
                                         0x37c (size before relaxing)
- .debug_str     0x0000000000000ca9       0x49 ../third_party/common/crt0/crt0.o
+ .debug_str     0x0000000000000cab       0x49 ../third_party/common/crt0/crt0.o
 
 .debug_frame    0x0000000000000000      0x478
  .debug_frame   0x0000000000000000       0xa4 main.o
- .debug_frame   0x00000000000000a4      0x2c0 engine/basics.o
+ .debug_frame   0x00000000000000a4      0x2c0 engine/graphics.o
  .debug_frame   0x0000000000000364       0x40 engine/input.o
  .debug_frame   0x00000000000003a4       0x4c engine/timerz.o
  .debug_frame   0x00000000000003f0       0x88 engine/audio.o
 
 .debug_loc      0x0000000000000000      0xb37
- .debug_loc     0x0000000000000000      0x868 engine/basics.o
+ .debug_loc     0x0000000000000000      0x868 engine/graphics.o
  .debug_loc     0x0000000000000868       0x61 engine/input.o
  .debug_loc     0x00000000000008c9      0x170 engine/timerz.o
  .debug_loc     0x0000000000000a39       0xfe engine/audio.o

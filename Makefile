@@ -2,7 +2,7 @@ TARGET = BuzzyBee
 TYPE = ps-exe
 
 SRCS = main.c \
-engine/basics.c \
+engine/graphics.c \
 engine/input.c \
 engine/timerz.c \
 engine/audio.c \

@@ -38,7 +38,7 @@ SOFTWARE.
 #include <libgs.h>
 #include <libspu.h>
 #include "libs/images.h"
-#include "engine/basics.h"
+#include "engine/graphics.h"
 #include "engine/input.h"
 #include "engine/timerz.h"
 #include "engine/audio.h"

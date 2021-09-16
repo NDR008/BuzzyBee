@@ -16,7 +16,7 @@
 #include <libgpu.h>
 #include <libgs.h>
 #include <libetc.h>
-#include "basics.h"
+#include "graphics.h"
 
 GsOT 		orderingTable[2];
 GsOT_TAG  	minorOrderingTable[2][1<<OT_LENGTH];

@@ -12,6 +12,7 @@
         "stdlib.h": "c",
         "images.h": "c",
         "basics.h": "c",
-        "audio.h": "c"
+        "audio.h": "c",
+        "graphics.h": "c"
     }
 }
