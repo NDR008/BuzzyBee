@@ -64,8 +64,8 @@ void audioTransferVagToSPU(char* sound, int sound_size, int voice_channel) {
     SpuSetVoiceAttr (&g_s_attr);  // this is causing the sound to play
 }
 
-void audioPlay(int voice_channel) {
-    setVoiceVolume(&g_s_attr, voice_channel, 0x1fff);
+void audioPlay(int voice_channel, unsigned short pitch) {
+    setVoiceVolumePitch(&g_s_attr, voice_channel, 0x1fff, pitch);
     SpuSetKey(SpuOn, voice_channel);
 }
 
@@ -77,8 +77,10 @@ void audioFree(unsigned long sound_address) {
 	SpuFree(sound_address);
 }
 
-void setVoiceVolume(SpuVoiceAttr * voiceAttributes, int voice_channel, int volume ){
+void setVoiceVolumePitch(SpuVoiceAttr * voiceAttributes, int voice_channel, int volume, unsigned short pitch){
     voiceAttributes->mask= ( SPU_VOICE_VOLL | SPU_VOICE_VOLR );
+    g_s_attr.pitch = pitch;
+    SpuSetVoiceAttr (&g_s_attr);
     voiceAttributes->voice = voice_channel;
     voiceAttributes->volume.left =  voiceAttributes->volume.right  = volume;
     SpuSetVoiceAttr(voiceAttributes);  

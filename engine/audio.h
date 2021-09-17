@@ -4,9 +4,9 @@
 
 void audioInit();
 void audioTransferVagToSPU(char* sound, int sound_size, int voice_channel);
-void audioPlay(int voice_channel);
+void audioPlay(int voice_channel, unsigned short pitch);
 
 void audioChannelConfigure();
 
 void audioFree(unsigned long sound_address);
-void setVoiceVolume(SpuVoiceAttr * voiceAttributes, int voice_channel, int volume );
+void setVoiceVolumePitch(SpuVoiceAttr * voiceAttributes, int voice_channel, int volume, unsigned short pitch);

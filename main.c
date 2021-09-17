@@ -106,7 +106,7 @@ void updateAnimation(){
     
     // if we pressu jump...
     if (input_trig & IN_JUMP) {
-        audioPlay(SPU_1CH);
+        audioPlay(SPU_1CH, 0x1000);
         mainPlayer.y_vel -= MAXFLAP;
         if (mainPlayer.y_vel < -MAXFLAP) {
             mainPlayer.y_vel = MAXFLAP;
