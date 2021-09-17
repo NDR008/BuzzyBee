@@ -87,10 +87,9 @@ void initialize() {
     in_update(); // should not be needed but there is a bug without it
 	//initializeDebugFont();
     initPlayer();
-    
-
     //load sprites
 }
+
 #define factor 1024
 #define GRAVITY factor / 8
 #define MAXSPEED factor
@@ -102,8 +101,7 @@ void initialize() {
 
 #define CEILING (SPRITEHEIGHT)
 
-void updateAnimation(){
-    
+void updateAnimation(){   
     // if we pressu jump...
     if (input_trig & IN_JUMP) {
         audioPlay(SPU_1CH, 0x1000);
@@ -112,7 +110,6 @@ void updateAnimation(){
             mainPlayer.y_vel = MAXFLAP;
         }
     }
-
     // constant desire to go down...
     mainPlayer.y_vel += GRAVITY;
     if (mainPlayer.y_vel > MAXSPEED) {
@@ -137,10 +134,8 @@ void updateAnimation(){
         mainPlayer.frame_n++;
         mainPlayer.current_sprite = createImage(img_beepsrites[mainPlayer.frame_n % (mainPlayer.total_frames)]);
     }
-
     mainPlayer.current_sprite = moveImage(mainPlayer.current_sprite, mainPlayer.x_pos / factor, mainPlayer.y_pos /factor);
 }
-
 
 void gameScreen(){
 }
