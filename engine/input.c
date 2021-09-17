@@ -84,7 +84,7 @@ void in_update(void)
     PADTYPE *pad = (PADTYPE *)&padbuf[0][0];
     input_pad = ~pad->btn;
     input_old = input_held;
-    input_held = in_remap(input_pad);
+    input_held = input_pad;
     if (input_suppress_trig)
     {
         input_trig = 0;
