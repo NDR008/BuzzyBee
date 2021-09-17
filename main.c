@@ -37,7 +37,7 @@ SOFTWARE.
 #include <libgpu.h>
 #include <libgs.h>
 #include <libspu.h>
-#include "libs/images.h"
+#include "graphics/images.h"
 #include "engine/graphics.h"
 #include "engine/input.h"
 #include "engine/timerz.h"
@@ -50,8 +50,7 @@ SOFTWARE.
 #define __ramsize   0x00200000
 #define __stacksize 0x00004000
 
-// temp sprites
-Image playerSprite;
+Image gameStartGraphic;
 
 // Global timer
 PSXTimer mainTimer;
@@ -101,9 +100,11 @@ void initialize() {
 
 #define CEILING (SPRITEHEIGHT)
 
+int gameState = 0; // 0 = start state, 1 = play state, 2 = pause
+
 void updateAnimation(){   
     // if we pressu jump...
-    if (input_trig & IN_JUMP) {
+    if (input_trig & PAD_CROSS) {
         audioPlay(SPU_1CH, 0x1000);
         mainPlayer.y_vel -= MAXFLAP;
         if (mainPlayer.y_vel < -MAXFLAP) {
@@ -135,16 +136,20 @@ void updateAnimation(){
         mainPlayer.current_sprite = createImage(img_beepsrites[mainPlayer.frame_n % (mainPlayer.total_frames)]);
     }
     mainPlayer.current_sprite = moveImage(mainPlayer.current_sprite, mainPlayer.x_pos / factor, mainPlayer.y_pos /factor);
+    drawImage(mainPlayer.current_sprite);
 }
 
 void gameScreen(){
+    gameStartGraphic = createImage(img_a_BuzzyBee);
+    gameStartGraphic = moveImage(gameStartGraphic, SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
+    drawImage(gameStartGraphic);
 }
 
 void initPlayer(){
     mainPlayer.current_sprite = createImage(img_beepsrites[0]);
     mainPlayer.total_frames = 4;
     mainPlayer.y_pos = GROUND * factor;
-    mainPlayer.x_pos = (SCREEN_WIDTH / 2) * factor;
+    mainPlayer.x_pos = (SCREEN_WIDTH / 4) * factor;
     mainPlayer.y_vel, mainPlayer.x_vel = 0;
     mainPlayer.anim_rate = 4;
 }
@@ -160,10 +165,20 @@ int main() {
     while (1) {
         in_update();
         clearDisplay();
+        if (gameState == 1){
+            updateAnimation();
+                    
+        }
+        else if (gameState == 0){
+            gameScreen();
+            if (input_trig & PAD_START) {
+                audioPlay(SPU_1CH, 0x1000);
+                gameState = 1;
+                }
+        }
 
-        updateAnimation();
         //mainPlayer.current_sprite = moveImage(mainPlayer.current_sprite, mainPlayer.x_pos/, mainPlayer.y_pos);
-        drawImage(mainPlayer.current_sprite);
+        
         drawBox(frame);
         flushDisplay(); // dump it to the screen
         mainTimer = incTimer(mainTimer);
