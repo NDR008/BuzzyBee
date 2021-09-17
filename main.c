@@ -80,15 +80,14 @@ void initPlayer();
 void initialize() {
 	initializeScreen();
     setBackgroundColor(createColor(30, 30, 30));
-
     audioInit();
+    audioTransferVagToSPU(buzz1, buzz1_size, SPU_1CH);
 
     in_init();  // init inputs
     in_update(); // should not be needed but there is a bug without it
 	//initializeDebugFont();
     initPlayer();
     
-    audioTransferVagToSPU(buzz1, buzz1_size, SPU_1CH);
 
     //load sprites
 }
@@ -157,7 +156,7 @@ void initPlayer(){
 
 int main() {
     initialize();
-    printf("BuzzyBee v0.1\n");
+    printf("BuzzyBee v0.11\n");
 
     Box frame;
     frame = createBox(createColor(200, 155, 155), 20, 20, 320-20, 240-20);

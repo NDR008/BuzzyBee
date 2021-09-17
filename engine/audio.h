@@ -9,3 +9,4 @@ void audioPlay(int voice_channel);
 void audioChannelConfigure();
 
 void audioFree(unsigned long sound_address);
+void setVoiceVolume(SpuVoiceAttr * voiceAttributes, int voice_channel, int volume );
