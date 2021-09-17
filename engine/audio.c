@@ -1,6 +1,5 @@
 /*
  * Adapted from constants.h from Wituz
- * and magic from Nicolas
  */
 
 #include "audio.h"
@@ -11,13 +10,13 @@ unsigned long l_vag1_spu_addr;
 
 void audioInit() {
 	//SpuInitMalloc (SOUND_MALLOC_MAX, SPU_MALLOC_RECSIZ * (SOUND_MALLOC_MAX + 1));
-	SpuInit();
+    SpuInit();
     static char spuMallocArea[SPU_MALLOC_RECSIZ * (SOUND_MALLOC_MAX + 1)];
-	SpuInitMalloc (SOUND_MALLOC_MAX, spuMallocArea);
-	l_c_attr.mask = (SPU_COMMON_MVOLL | SPU_COMMON_MVOLR);
-	l_c_attr.mvol.left  = 0x3fff; // set master left volume
-	l_c_attr.mvol.right = 0x3fff; // set master right volume
-	SpuSetCommonAttr (&l_c_attr);
+    SpuInitMalloc (SOUND_MALLOC_MAX, spuMallocArea);
+    l_c_attr.mask = (SPU_COMMON_MVOLL | SPU_COMMON_MVOLR);
+    l_c_attr.mvol.left  = 0x3fff; // set master left volume
+    l_c_attr.mvol.right = 0x3fff; // set master right volume
+    SpuSetCommonAttr (&l_c_attr);
     SpuSetIRQ(SPU_OFF);
     SpuSetKey(SpuOff, SPU_ALLCH);
 }
@@ -48,8 +47,8 @@ void audioTransferVagToSPU(char* sound, int sound_size, int voice_channel) {
 
 	g_s_attr.voice = (voice_channel);
 
-	g_s_attr.volume.left  = 0x1fff;
-	g_s_attr.volume.right = 0x1fff;
+    g_s_attr.volume.left  = 0x0;
+    g_s_attr.volume.right = 0x0;
 
 	g_s_attr.pitch        = 0x1000;
 	g_s_attr.addr         = l_vag1_spu_addr;
@@ -66,7 +65,8 @@ void audioTransferVagToSPU(char* sound, int sound_size, int voice_channel) {
 }
 
 void audioPlay(int voice_channel) {
-	SpuSetKey(SpuOn, voice_channel);
+    setVoiceVolume(&g_s_attr, voice_channel, 0x1fff);
+    SpuSetKey(SpuOn, voice_channel);
 }
 
 void audioChannelConfigure() {
@@ -75,4 +75,11 @@ void audioChannelConfigure() {
 
 void audioFree(unsigned long sound_address) {
 	SpuFree(sound_address);
+}
+
+void setVoiceVolume(SpuVoiceAttr * voiceAttributes, int voice_channel, int volume ){
+    voiceAttributes->mask= ( SPU_VOICE_VOLL | SPU_VOICE_VOLR );
+    voiceAttributes->voice = voice_channel;
+    voiceAttributes->volume.left =  voiceAttributes->volume.right  = volume;
+    SpuSetVoiceAttr(voiceAttributes);  
 }

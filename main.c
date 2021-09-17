@@ -87,9 +87,10 @@ void initialize() {
     in_update(); // should not be needed but there is a bug without it
 	//initializeDebugFont();
     initPlayer();
+    
+
     //load sprites
 }
-
 #define factor 1024
 #define GRAVITY factor / 8
 #define MAXSPEED factor
@@ -104,7 +105,7 @@ void initialize() {
 void updateAnimation(){
     
     // if we pressu jump...
-    if (input_trig & PAD_UP) {
+    if (input_trig & IN_JUMP) {
         audioPlay(SPU_1CH);
         mainPlayer.y_vel -= MAXFLAP;
         if (mainPlayer.y_vel < -MAXFLAP) {
@@ -155,7 +156,7 @@ void initPlayer(){
 
 int main() {
     initialize();
-    printf("BuzzyBee v0.1\n");
+    printf("BuzzyBee v0.11\n");
 
     Box frame;
     frame = createBox(createColor(200, 155, 155), 20, 20, 320-20, 240-20);
