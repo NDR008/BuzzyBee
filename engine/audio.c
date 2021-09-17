@@ -1,8 +1,10 @@
 /*
  * Adapted from constants.h from Wituz
+ * and magic from Nicolas
  */
 
 #include "audio.h"
+#include "spu.h"
 
 SpuCommonAttr l_c_attr;
 SpuVoiceAttr  g_s_attr;
@@ -19,6 +21,30 @@ void audioInit() {
 	l_c_attr.mvol.right = 0x3fff; // set master right volume
 	SpuSetCommonAttr (&l_c_attr);
     SpuSetIRQ(SPU_OFF);
+
+    SpuSetVoiceAttr (&g_s_attr);
+    
+    // from nic
+    DPCR |= 0x000b0000;
+    SPU_VOL_MAIN_LEFT = 0x3800;
+    SPU_VOL_MAIN_RIGHT = 0x3800;
+    SPU_CTRL = 0;
+    SPU_KEY_ON_LOW = 0;
+    SPU_KEY_ON_HIGH = 0;
+    SPU_KEY_OFF_LOW = 0xffff;
+    SPU_KEY_OFF_HIGH = 0xffff;
+    SPU_RAM_DTC = 4;
+    SPU_VOL_CD_LEFT = 0;
+    SPU_VOL_CD_RIGHT = 0;
+    SPU_PITCH_MOD_LOW = 0;
+    SPU_PITCH_MOD_HIGH = 0;
+    SPU_NOISE_EN_LOW = 0;
+    SPU_NOISE_EN_HIGH = 0;
+    SPU_REVERB_EN_LOW = 0;
+    SPU_REVERB_EN_HIGH = 0;
+    SPU_VOL_EXT_LEFT = 0;
+    SPU_VOL_EXT_RIGHT = 0;
+    SPU_CTRL = 0x8000;
 }
 
 void audioTransferVagToSPU(char* sound, int sound_size, int voice_channel) {
@@ -60,7 +86,6 @@ void audioTransferVagToSPU(char* sound, int sound_size, int voice_channel) {
 	g_s_attr.rr           = 0x0;
 	g_s_attr.sl           = 0xf;
 
-	SpuSetVoiceAttr (&g_s_attr);
 }
 
 void audioPlay(int voice_channel) {
@@ -73,4 +98,45 @@ void audioChannelConfigure() {
 
 void audioFree(unsigned long sound_address) {
 	SpuFree(sound_address);
+}
+
+void audioSilence() {
+    SPUInit();
+    for (unsigned i = 0; i < 24; i++) {
+        SPUResetVoice(i);
+    }
+}
+
+static void SPUResetVoice(int voiceID) {
+    SPU_VOICES[voiceID].volumeLeft = 0;
+    SPU_VOICES[voiceID].volumeRight = 0;
+    SPU_VOICES[voiceID].sampleRate = 0;
+    SPU_VOICES[voiceID].sampleStartAddr = 0;
+    SPU_VOICES[voiceID].ad = 0x000f;
+    SPU_VOICES[voiceID].currentVolume = 0;
+    SPU_VOICES[voiceID].sampleRepeatAddr = 0;
+    SPU_VOICES[voiceID].sr = 0x0000;
+}
+
+static void SPUInit() {
+    DPCR |= 0x000b0000;
+    SPU_VOL_MAIN_LEFT = 0x3800;
+    SPU_VOL_MAIN_RIGHT = 0x3800;
+    SPU_CTRL = 0;
+    SPU_KEY_ON_LOW = 0;
+    SPU_KEY_ON_HIGH = 0;
+    SPU_KEY_OFF_LOW = 0xffff;
+    SPU_KEY_OFF_HIGH = 0xffff;
+    SPU_RAM_DTC = 4;
+    SPU_VOL_CD_LEFT = 0;
+    SPU_VOL_CD_RIGHT = 0;
+    SPU_PITCH_MOD_LOW = 0;
+    SPU_PITCH_MOD_HIGH = 0;
+    SPU_NOISE_EN_LOW = 0;
+    SPU_NOISE_EN_HIGH = 0;
+    SPU_REVERB_EN_LOW = 0;
+    SPU_REVERB_EN_HIGH = 0;
+    SPU_VOL_EXT_LEFT = 0;
+    SPU_VOL_EXT_RIGHT = 0;
+    SPU_CTRL = 0x8000;
 }

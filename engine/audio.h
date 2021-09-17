@@ -9,3 +9,7 @@ void audioPlay(int voice_channel);
 void audioChannelConfigure();
 
 void audioFree(unsigned long sound_address);
+void audioSilence();
+static void SPUResetVoice(int voidID);
+
+static void SPUInit();

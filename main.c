@@ -36,12 +36,14 @@ SOFTWARE.
 #include <libgte.h>
 #include <libgpu.h>
 #include <libgs.h>
+#include <libsnd.h>
 #include <libspu.h>
 #include "libs/images.h"
 #include "engine/graphics.h"
 #include "engine/input.h"
 #include "engine/timerz.h"
 #include "engine/audio.h"
+#include "engine/spu.h"
 #include "sound/sfx/buzz1.h"
 
 // Global system
@@ -78,17 +80,18 @@ void gameScreen();
 void initPlayer();
 
 void initialize() {
+    audioSilence();
+    audioInit();
+    //SPUInit();
 	initializeScreen();
     setBackgroundColor(createColor(30, 30, 30));
-
-    audioInit();
 
     in_init();  // init inputs
     in_update(); // should not be needed but there is a bug without it
 	//initializeDebugFont();
     initPlayer();
-    
     audioTransferVagToSPU(buzz1, buzz1_size, SPU_1CH);
+    SPUUnMute();
 
     //load sprites
 }
@@ -107,6 +110,7 @@ void updateAnimation(){
     
     // if we pressu jump...
     if (input_trig & IN_JUMP) {
+        printf("X pressed\n");
         audioPlay(SPU_1CH);
         mainPlayer.y_vel -= MAXFLAP;
         if (mainPlayer.y_vel < -MAXFLAP) {
@@ -150,14 +154,14 @@ void initPlayer(){
     mainPlayer.current_sprite = createImage(img_beepsrites[0]);
     mainPlayer.total_frames = 4;
     mainPlayer.y_pos = GROUND * factor;
-    mainPlayer.x_pos = (SCREEN_WIDTH / 2) * factor;
+    mainPlayer.x_pos = (SCREEN_WIDTH / 4) * factor;
     mainPlayer.y_vel, mainPlayer.x_vel = 0;
-    mainPlayer.anim_rate = 4;
+    mainPlayer.anim_rate = 5;
 }
 
 int main() {
     initialize();
-    printf("BuzzyBee v0.1\n");
+    printf("BuzzyBee v0.15\n");
 
     Box frame;
     frame = createBox(createColor(200, 155, 155), 20, 20, 320-20, 240-20);
@@ -166,9 +170,7 @@ int main() {
     while (1) {
         in_update();
         clearDisplay();
-
         updateAnimation();
-        //mainPlayer.current_sprite = moveImage(mainPlayer.current_sprite, mainPlayer.x_pos/, mainPlayer.y_pos);
         drawImage(mainPlayer.current_sprite);
         drawBox(frame);
         flushDisplay(); // dump it to the screen
