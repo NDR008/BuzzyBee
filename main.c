@@ -80,15 +80,16 @@ void initPlayer();
 void initialize() {
 	initializeScreen();
     setBackgroundColor(createColor(30, 30, 30));
-
+    SpuInit();                                                                            // Initialize SPU. Called only once.
     audioInit();
+    audioTransferVagToSPU(buzz1, buzz1_size, SPU_1CH);
+    setVoiceAttr(pitch, SPU_0CH, vag_spu_address);
 
     in_init();  // init inputs
     in_update(); // should not be needed but there is a bug without it
 	//initializeDebugFont();
     initPlayer();
     
-    audioTransferVagToSPU(buzz1, buzz1_size, SPU_1CH);
 
     //load sprites
 }
