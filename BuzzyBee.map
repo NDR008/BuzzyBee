@@ -1087,13 +1087,13 @@ OUTPUT(BuzzyBee.elf elf32-tradlittlemips)
  .note          0x0000000000002b0c       0x74 ../third_party/psyq/lib/libc.a(c27.o)
  .note          0x0000000000002b80       0x74 ../third_party/psyq/lib/libc.a(c43.o)
 
-.debug_info     0x0000000000000000     0x31ce
- .debug_info    0x0000000000000000      0xea0 main.o
- .debug_info    0x0000000000000ea0     0x1861 engine/graphics.o
- .debug_info    0x0000000000002701      0x43c engine/input.o
- .debug_info    0x0000000000002b3d      0x14b engine/timerz.o
- .debug_info    0x0000000000002c88      0x520 engine/audio.o
- .debug_info    0x00000000000031a8       0x26 ../third_party/common/crt0/crt0.o
+.debug_info     0x0000000000000000     0x3249
+ .debug_info    0x0000000000000000      0xf1b main.o
+ .debug_info    0x0000000000000f1b     0x1861 engine/graphics.o
+ .debug_info    0x000000000000277c      0x43c engine/input.o
+ .debug_info    0x0000000000002bb8      0x14b engine/timerz.o
+ .debug_info    0x0000000000002d03      0x520 engine/audio.o
+ .debug_info    0x0000000000003223       0x26 ../third_party/common/crt0/crt0.o
 
 .debug_abbrev   0x0000000000000000      0xa7e
  .debug_abbrev  0x0000000000000000      0x23d main.o
@@ -1133,11 +1133,11 @@ OUTPUT(BuzzyBee.elf elf32-tradlittlemips)
  .debug_line    0x0000000000000e2a       0x63 ../third_party/common/crt0/crt0.o
 
 .debug_str      0x0000000000000000      0xcd0
- .debug_str     0x0000000000000000      0x712 main.o
-                                        0x775 (size before relaxing)
- .debug_str     0x0000000000000712      0x28a engine/graphics.o
+ .debug_str     0x0000000000000000      0x7ad main.o
+                                        0x810 (size before relaxing)
+ .debug_str     0x00000000000007ad      0x28a engine/graphics.o
                                         0x6ee (size before relaxing)
- .debug_str     0x000000000000099c      0x115 engine/input.o
+ .debug_str     0x0000000000000a37       0x7a engine/input.o
                                         0x39a (size before relaxing)
  .debug_str     0x0000000000000ab1       0x16 engine/timerz.o
                                         0x1dc (size before relaxing)

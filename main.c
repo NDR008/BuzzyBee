@@ -104,7 +104,7 @@ void initialize() {
 void updateAnimation(){
     
     // if we pressu jump...
-    if (input_trig & IN_JUMP) {
+    if (input_trig & PAD_UP) {
         audioPlay(SPU_1CH);
         mainPlayer.y_vel -= MAXFLAP;
         if (mainPlayer.y_vel < -MAXFLAP) {
