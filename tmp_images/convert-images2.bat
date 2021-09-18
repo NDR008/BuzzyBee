@@ -14,9 +14,6 @@ echo  CONVERING IMAGES TO A HEADER FILE
 echo -----------------------------------
 
 :: Delete existing files and re-create the working directories
-if exist "images\tim" rmdir /s /q "images\tim"
-if exist "images\8bit" rmdir /s /q "images\8bit"
-if exist "images\headers" rmdir /s /q "images\headers"
 mkdir "images\tim"
 mkdir "images\8bit"
 mkdir "images\headers"

@@ -50,7 +50,6 @@ SOFTWARE.
 #define __ramsize   0x00200000
 #define __stacksize 0x00004000
 
-Image gameStartGraphic;
 
 // Global timer
 PSXTimer mainTimer;
@@ -64,17 +63,25 @@ typedef struct{
     int x_vel;
     int y_vel;
     int anim_rate; // how many vsyncs
-} animatedObject;
+    unsigned char **img_list;
+} AnimatedObject;
 
-animatedObject mainPlayer;
+AnimatedObject mainPlayer;
+AnimatedObject pressStart;
+AnimatedObject Bee;
+AnimatedObject Buzzy;
+AnimatedObject jam;
 
 unsigned char *img_beepsrites[] = { img_bee_0, img_bee_1, img_bee_2, img_bee_1 };
+unsigned char *img_pressStratSprites[] = { img_Press_start1, img_Press_start2};
 //unsigned char *img_beepsrites[2] = { &img_beesprite0, &img_beesprite1 };
 
 void initialize();
 void startScreen();
 void gameScreen();
 void initPlayer();
+void initIntro();
+void animate(AnimatedObject animatedObj);
 
 void initialize() {
 	initializeScreen();
@@ -86,18 +93,17 @@ void initialize() {
     in_update(); // should not be needed but there is a bug without it
 	//initializeDebugFont();
     initPlayer();
+    initIntro();
     //load sprites
 }
 
-#define factor 1024
+// scaling the graphics (example video width is 320px but "game world" is 320 x factor)
+#define factor 1024     
 #define GRAVITY factor / 8
 #define MAXSPEED factor
-
 #define MAXFLAP 5 * factor
-
 #define SPRITEHEIGHT 30
 #define GROUND (SCREEN_HEIGHT-20-30) * factor
-
 #define CEILING (SPRITEHEIGHT)
 
 int gameState = 0; // 0 = start state, 1 = play state, 2 = pause
@@ -129,20 +135,22 @@ void updateAnimation(){
         mainPlayer.y_pos = CEILING;
         mainPlayer.y_vel = 0;
     }
-
     // animate
-    if (mainTimer.vsync % mainPlayer.anim_rate == 0) {
-        mainPlayer.frame_n++;
-        mainPlayer.current_sprite = createImage(img_beepsrites[mainPlayer.frame_n % (mainPlayer.total_frames)]);
-    }
-    mainPlayer.current_sprite = moveImage(mainPlayer.current_sprite, mainPlayer.x_pos / factor, mainPlayer.y_pos /factor);
-    drawImage(mainPlayer.current_sprite);
+    animate(mainPlayer);
 }
 
 void gameScreen(){
-    gameStartGraphic = createImage(img_a_BuzzyBee);
-    gameStartGraphic = moveImage(gameStartGraphic, SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
-    drawImage(gameStartGraphic);
+    animate(pressStart);
+}
+
+void animate(AnimatedObject animatedObj){
+    if (mainTimer.vsync % animatedObj.anim_rate == 0) {
+        animatedObj.frame_n++;
+        animatedObj.current_sprite = createImage(animatedObj.img_list[animatedObj.frame_n % (animatedObj.total_frames)]);
+    }
+    animatedObj.current_sprite = createImage(animatedObj.img_list[animatedObj.frame_n % (animatedObj.total_frames)]);
+    animatedObj.current_sprite = moveImage(animatedObj.current_sprite, animatedObj.x_pos / factor, animatedObj.y_pos /factor);
+    drawImage(animatedObj.current_sprite);
 }
 
 void initPlayer(){
@@ -152,34 +160,37 @@ void initPlayer(){
     mainPlayer.x_pos = (SCREEN_WIDTH / 4) * factor;
     mainPlayer.y_vel, mainPlayer.x_vel = 0;
     mainPlayer.anim_rate = 4;
+    mainPlayer.img_list = img_beepsrites;
+}
+
+void initIntro(){
+    // press_start object
+    pressStart.current_sprite = createImage(img_pressStratSprites[0]);
+    pressStart.total_frames = 2;
+    pressStart.y_pos = (SCREEN_HEIGHT * 3 / 4) * factor;
+    pressStart.x_pos = (SCREEN_WIDTH / 2) * factor;
+    pressStart.y_vel, pressStart.x_vel = 0;
+    pressStart.anim_rate = 10;
+    pressStart.img_list = img_pressStratSprites;
 }
 
 int main() {
     initialize();
-    printf("BuzzyBee v0.11\n");
-
-    Box frame;
-    frame = createBox(createColor(200, 155, 155), 20, 20, 320-20, 240-20);
+    printf("BuzzyBee v0.12\n");
     mainTimer = createTimer();
-
     while (1) {
         in_update();
         clearDisplay();
         if (gameState == 1){
             updateAnimation();
-                    
         }
         else if (gameState == 0){
             gameScreen();
             if (input_trig & PAD_START) {
                 audioPlay(SPU_1CH, 0x1000);
                 gameState = 1;
-                }
+            }
         }
-
-        //mainPlayer.current_sprite = moveImage(mainPlayer.current_sprite, mainPlayer.x_pos/, mainPlayer.y_pos);
-        
-        drawBox(frame);
         flushDisplay(); // dump it to the screen
         mainTimer = incTimer(mainTimer);
     }
