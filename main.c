@@ -191,12 +191,22 @@ void initIntro(){
     Bee.total_frames = 1; // third frame is reserved
     Bee.frame_n = 0;
     Bee.index = 0;
-    Bee.y_pos = (SCREEN_HEIGHT 3 / 4) * factor;
-    Bee.x_pos = (SCREEN_WIDTH * 1 / 4) * factor;
-    Bee.y_vel, pressStart.x_vel = 0;
+    Bee.y_pos = (SCREEN_HEIGHT * 1 / 4) * factor;
+    Bee.x_pos = (SCREEN_WIDTH * 3 / 4) * factor;
+    Bee.y_vel, Bee.x_vel = 0;
     Bee.anim_rate = 25;
     BeeL[0] = createImage(img_Bee);
     Bee.img_list = BeeL;
+
+    Buzzy.total_frames = 1; 
+    Buzzy.frame_n = 0;
+    Buzzy.index = 0;
+    Buzzy.y_pos = (SCREEN_HEIGHT * 1 / 4) * factor;
+    Buzzy.x_pos = (SCREEN_WIDTH * 1 / 4) * factor;
+    Buzzy.y_vel, Buzzy.x_vel = 0;
+    Buzzy.anim_rate = 25;
+    BuzzyL[0] = createImage(img_Buzzy);
+    Buzzy.img_list = BuzzyL;
 }
 
 int main() {
