@@ -55,33 +55,39 @@ SOFTWARE.
 PSXTimer mainTimer;
 
 typedef struct{
-    Image current_sprite;
-    int frame_n;
-    int total_frames;
+    int frame_n;            // this is the current frame
+    int index;
+    int total_frames;       // this is the total frame
     int y_pos;
     int x_pos;
     int x_vel;
     int y_vel;
     int anim_rate; // how many vsyncs
-    unsigned char **img_list;
+    Image *img_list;   // make this a list of Image (ok)
 } AnimatedObject;
 
 AnimatedObject mainPlayer;
-AnimatedObject pressStart;
-AnimatedObject Bee;
-AnimatedObject Buzzy;
-AnimatedObject jam;
+Image mainPlayerL[4];
 
-unsigned char *img_beepsrites[] = { img_bee_0, img_bee_1, img_bee_2, img_bee_1 };
-unsigned char *img_pressStratSprites[] = { img_Press_start1, img_Press_start2};
-//unsigned char *img_beepsrites[2] = { &img_beesprite0, &img_beesprite1 };
+AnimatedObject pressStart;
+Image pressStartL[3];
+
+AnimatedObject Bee;
+Image BeeL[1];
+
+AnimatedObject Buzzy;
+Image BuzzyL[1];
+
+AnimatedObject jam;
+Image jamL[1];
+
 
 void initialize();
 void startScreen();
 void gameScreen();
 void initPlayer();
 void initIntro();
-void animate(AnimatedObject animatedObj);
+void animate(AnimatedObject *animatedObj);
 
 void initialize() {
 	initializeScreen();
@@ -136,47 +142,66 @@ void updateAnimation(){
         mainPlayer.y_vel = 0;
     }
     // animate
-    animate(mainPlayer);
+    animate(&mainPlayer);
 }
 
 void gameScreen(){
-    animate(pressStart);
+    animate(&pressStart);
+    animate(&Bee);
 }
 
-void animate(AnimatedObject animatedObj){
-    if (mainTimer.vsync % animatedObj.anim_rate == 0) {
-        animatedObj.frame_n++;
-        animatedObj.current_sprite = createImage(animatedObj.img_list[animatedObj.frame_n % (animatedObj.total_frames)]);
+void animate(AnimatedObject *animatedObj){
+    Image toDraw;
+    if (mainTimer.vsync % animatedObj->anim_rate == 0) {
+        animatedObj->frame_n++;
+        animatedObj->index = animatedObj->frame_n % animatedObj->total_frames;
     }
-    animatedObj.current_sprite = createImage(animatedObj.img_list[animatedObj.frame_n % (animatedObj.total_frames)]);
-    animatedObj.current_sprite = moveImage(animatedObj.current_sprite, animatedObj.x_pos / factor, animatedObj.y_pos /factor);
-    drawImage(animatedObj.current_sprite);
+    toDraw = moveImage(animatedObj->img_list[animatedObj->index], animatedObj->x_pos / factor, animatedObj->y_pos / factor);
+    drawImage(toDraw);
 }
 
 void initPlayer(){
-    mainPlayer.current_sprite = createImage(img_beepsrites[0]);
     mainPlayer.total_frames = 4;
-    mainPlayer.y_pos = GROUND * factor;
+    mainPlayer.frame_n = 0;
+    mainPlayer.index = 0;
+    mainPlayer.y_pos = (SCREEN_HEIGHT * 3 / 4) * factor;
     mainPlayer.x_pos = (SCREEN_WIDTH / 4) * factor;
     mainPlayer.y_vel, mainPlayer.x_vel = 0;
     mainPlayer.anim_rate = 4;
-    mainPlayer.img_list = img_beepsrites;
+    mainPlayerL[0] = createImage(img_bee_0);
+    mainPlayerL[1] = createImage(img_bee_1);
+    mainPlayerL[2] = createImage(img_bee_2);
+    mainPlayerL[3] = mainPlayerL[1];
+    mainPlayer.img_list = mainPlayerL;
 }
 
 void initIntro(){
-    // press_start object
-    pressStart.current_sprite = createImage(img_pressStratSprites[0]);
-    pressStart.total_frames = 2;
+    pressStart.total_frames = 2; // third frame is reserved
+    pressStart.frame_n = 0;
+    pressStart.index = 0;
     pressStart.y_pos = (SCREEN_HEIGHT * 3 / 4) * factor;
     pressStart.x_pos = (SCREEN_WIDTH / 2) * factor;
     pressStart.y_vel, pressStart.x_vel = 0;
-    pressStart.anim_rate = 10;
-    pressStart.img_list = img_pressStratSprites;
+    pressStart.anim_rate = 25;
+    pressStartL[0] = createImage(img_Press_start1);
+    pressStartL[1] = createImage(img_Press_start2);
+    pressStartL[2] = createImage(img_Press_start3);
+    pressStart.img_list = pressStartL;
+
+    Bee.total_frames = 1; // third frame is reserved
+    Bee.frame_n = 0;
+    Bee.index = 0;
+    Bee.y_pos = (SCREEN_HEIGHT 3 / 4) * factor;
+    Bee.x_pos = (SCREEN_WIDTH * 1 / 4) * factor;
+    Bee.y_vel, pressStart.x_vel = 0;
+    Bee.anim_rate = 25;
+    BeeL[0] = createImage(img_Bee);
+    Bee.img_list = BeeL;
 }
 
 int main() {
     initialize();
-    printf("BuzzyBee v0.12\n");
+    printf("BuzzyBee v0.12 New Animation routine\n");
     mainTimer = createTimer();
     while (1) {
         in_update();
