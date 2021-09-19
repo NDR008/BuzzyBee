@@ -185,9 +185,6 @@ void setScreenMode(int mode) {
      	SetVideoMode(0);
      	if (DEBUGMODE) { printf("Video Mode is (%d)\n",GetVideoMode()); }
    }
-   //double Init...
-	//GsInitGraph(SCREEN_WIDTH, SCREEN_HEIGHT, GsINTER|GsOFSGPU, 1, 0);
-	//GsDefDispBuff(0, 0, 0, SCREEN_HEIGHT);
 }
 
 void setBackgroundColor(Color color) {
@@ -204,8 +201,7 @@ void initializeScreen() {
 	clearVRAM();
 	GsInitGraph(SCREEN_WIDTH, SCREEN_HEIGHT, GsINTER|GsOFSGPU, 1, 0); //Set up interlation..
 	GsDefDispBuff(0, 0, 0, SCREEN_HEIGHT);	//..and double buffering.
-    //GsInit3D();
-	systemBackgroundColor = createColor(0, 0, 255);
+	systemBackgroundColor = createColor(0, 0, 0);
 	initializeOrderingTable();
 }
 

@@ -458,31 +458,32 @@ END GROUP
                 0x0000000080010e08       0x44 engine/graphics.o
                 0x0000000080010e08                clearVRAM
  .text.initializeScreen
-                0x0000000080010e4c       0xac engine/graphics.o
+                0x0000000080010e4c       0xa8 engine/graphics.o
                 0x0000000080010e4c                initializeScreen
- .text.in_init  0x0000000080010ef8       0x68 engine/input.o
-                0x0000000080010ef8                in_init
+ .text.in_init  0x0000000080010ef4       0x68 engine/input.o
+                0x0000000080010ef4                in_init
  .text.in_update
-                0x0000000080010f60       0x50 engine/input.o
-                0x0000000080010f60                in_update
+                0x0000000080010f5c       0x50 engine/input.o
+                0x0000000080010f5c                in_update
  .text.createTimer
-                0x0000000080010fb0       0x44 engine/timerz.o
-                0x0000000080010fb0                createTimer
+                0x0000000080010fac       0x44 engine/timerz.o
+                0x0000000080010fac                createTimer
  .text.incTimer
-                0x0000000080010ff4       0x5c engine/timerz.o
-                0x0000000080010ff4                incTimer
+                0x0000000080010ff0       0x5c engine/timerz.o
+                0x0000000080010ff0                incTimer
  .text.audioInit
-                0x0000000080011050       0x60 engine/audio.o
-                0x0000000080011050                audioInit
+                0x000000008001104c       0x60 engine/audio.o
+                0x000000008001104c                audioInit
  .text.audioTransferVagToSPU
-                0x00000000800110b0       0xc0 engine/audio.o
-                0x00000000800110b0                audioTransferVagToSPU
+                0x00000000800110ac       0xc0 engine/audio.o
+                0x00000000800110ac                audioTransferVagToSPU
  .text.setVoiceVolumePitch
-                0x0000000080011170       0x68 engine/audio.o
-                0x0000000080011170                setVoiceVolumePitch
+                0x000000008001116c       0x68 engine/audio.o
+                0x000000008001116c                setVoiceVolumePitch
  .text.audioPlay
-                0x00000000800111d8       0x40 engine/audio.o
-                0x00000000800111d8                audioPlay
+                0x00000000800111d4       0x40 engine/audio.o
+                0x00000000800111d4                audioPlay
+ *fill*         0x0000000080011214        0x4 
  .text          0x0000000080011218       0x10 ../third_party/psyq/lib/libapi.a(a91.o)
                 0x0000000080011218                ChangeClearPAD
  .text          0x0000000080011228      0x290 ../third_party/psyq/lib/libapi.a(pad.o)
