@@ -15,6 +15,7 @@ PSXTimer createTimer(){
     timer.sec = 0;
     timer.min = 0;
     timer.vsync = 0;
+    timer.totalsec = 0;
     if(GetVideoMode()){
 		timer.factor =50;
 	} else {
@@ -28,10 +29,12 @@ PSXTimer incTimer(PSXTimer timer){
 	if (timer.vsync >= timer.factor) {
 		timer.vsync = 0;
 		timer.sec++;
+        timer.totalsec++;
 	}
 	if (timer.sec >= 60){
 		timer.min++;
 		timer.sec = 0;
+        timer.totalsec++;
 	}
 	return timer;
 }

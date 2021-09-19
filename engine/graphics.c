@@ -71,9 +71,10 @@ Image createImage(unsigned char imageData[]) {
 	image.sprite.r = 128;							// color red blend
 	image.sprite.g = 128;							// color green blend
 	image.sprite.b = 128;							// color blue blend
-	image.sprite.u=(image.tim_data.px - 320) * 2;   // position within timfile for sprite <-- works w/o overlap
+	image.sprite.u = (image.tim_data.px - 320) * 2;   // position within timfile for sprite <-- works w/o overlap
+    //image.sprite.u = (image.tim_data.px & 0xFFC0);
     //image.sprite.u = image.tim_data.px - ( image.sprite.tpage < 16 ? image.sprite.tpage * 64 : (image.sprite.tpage - 16) * 64 );  // works w/o overlap
-    // image.sprite.u = (image.tim_data.px << 2) & 0xFF;  // broken on non-overlapped
+    //image.sprite.u = (image.tim_data.px << 2) & 0xFF;  // broken on non-overlapped
 	image.sprite.v = image.tim_data.py;				// position within timfile for sprite
 	image.sprite.cx = image.tim_data.cx;            // CLUT location x
 	image.sprite.cy = image.tim_data.cy;            // CLUT location y
