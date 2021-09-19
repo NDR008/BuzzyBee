@@ -43,6 +43,7 @@ SOFTWARE.
 #include "engine/timerz.h"
 #include "engine/audio.h"
 #include "sound/sfx/buzz1.h"
+#include "sound/sfx/menustart.h"
 
 // Global system
 #define OT_LENGTH 1
@@ -86,8 +87,10 @@ void initialize();
 void startScreen();
 void gameStart();
 void gameMode();
+void debug14Mode();
 void initPlayer();
 void initIntro();
+void debugMode();
 void animate(AnimatedObject *animatedObj);
 
 void initialize() {
@@ -95,6 +98,7 @@ void initialize() {
     setBackgroundColor(createColor(30, 30, 30));
     audioInit();
     audioTransferVagToSPU(buzz1, buzz1_size, SPU_1CH);
+    audioTransferVagToSPU(menustart, menustart_size, SPU_0CH);
 
     in_init();  // init inputs
     in_update(); // should not be needed but there is a bug without it
@@ -191,6 +195,16 @@ void animate(AnimatedObject *animatedObj){
     drawImage(toDraw);
 }
 
+void debugMode(){
+    Image debugJam = createImage(img_jam_1);
+    debugJam = moveImage(debugJam, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 4);    
+    Image debugBee = createImage(img_bee_0);    
+    debugBee = moveImage(debugBee, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);    
+    
+    drawImage(debugJam);
+    drawImage(debugBee);
+}
+
 void initPlayer(){
     mainPlayer.total_frames = 4;
     mainPlayer.frame_n = 0;
@@ -259,21 +273,32 @@ void initIntro(){
 
 int main() {
     initialize();
-    printf("BuzzyBee v0.12 New Animation routine\n");
+    printf("BuzzyBee v0.13 New Animation routine\n");
     mainTimer = createTimer();
     while (1) {
+        int time = mainTimer.totalsec;
         in_update();
         clearDisplay();
         if (gameState == 1){
             gameMode();
         }
         else if (gameState == 0){
+            audioPlay(SPU_0CH, 0x1000);
             gameStart();
-            if (input_trig & PAD_START) {
-                audioPlay(SPU_1CH, 0x1000);
-                gameState = 1;
-            }
         }
+        else if (gameState == 99){
+            debugMode();
+        }
+
+        if (input_trig & PAD_START) {
+            gameState = 1;
+        }
+        if (input_trig & PAD_SELECT) {
+            gameState = 99;
+        }
+
+        //printf("Game mode %i\n", gameState);
+
         flushDisplay(); // dump it to the screen
         mainTimer = incTimer(mainTimer);
     }

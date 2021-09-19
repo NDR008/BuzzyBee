@@ -11,6 +11,7 @@ typedef struct PSXTimer {
 	int sec;
 	int vsync;
 	int factor;
+    int totalsec;
 } PSXTimer;
 
 PSXTimer createTimer();
