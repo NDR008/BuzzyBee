@@ -84,7 +84,8 @@ Image jamL[3];
 
 void initialize();
 void startScreen();
-void gameScreen();
+void gameStart();
+void gameMode();
 void initPlayer();
 void initIntro();
 void animate(AnimatedObject *animatedObj);
@@ -115,7 +116,7 @@ int a, b, c = 0; // a is for bringing in Buzzy, b for bringing in Bee, c from br
 
 int gameState = 0; // 0 = start state, 1 = play state, 2 = pause
 
-void updateAnimation(){   
+void gameMode(){   
     // if we pressu jump...
     if (input_trig & PAD_CROSS) {
         audioPlay(SPU_1CH, 0x1000);
@@ -146,8 +147,7 @@ void updateAnimation(){
     animate(&mainPlayer);
 }
 
-void gameScreen(){
-        printf("%i, %i, %i\n", a,b,c);
+void gameStart(){
     int Buzzy_limit = (BuzzyL[0].sprite.w / 2) * factor;
     if (Buzzy.x_pos < Buzzy_limit) {
         Buzzy.x_pos += Buzzy.x_vel;
@@ -265,10 +265,10 @@ int main() {
         in_update();
         clearDisplay();
         if (gameState == 1){
-            updateAnimation();
+            gameMode();
         }
         else if (gameState == 0){
-            gameScreen();
+            gameStart();
             if (input_trig & PAD_START) {
                 audioPlay(SPU_1CH, 0x1000);
                 gameState = 1;
