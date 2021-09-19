@@ -25,9 +25,6 @@
 #define SCREEN_MODE_PAL 0
 #define SCREEN_MODE_NTSC 1
 
-#define DEBUGMODE 1
-#define DEBUG 0
-
 extern int SCREEN_WIDTH, SCREEN_HEIGHT;
 
 typedef struct Color {

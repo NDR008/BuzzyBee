@@ -34,7 +34,7 @@ for %%i in (images/*.*) do (
 SET currentX=320
 SET currentY=0
 SET maxHeight=0
-SET canvasWidth=1024
+SET canvasWidth=600
 SET canvasHeight=512
 SET index=0
 

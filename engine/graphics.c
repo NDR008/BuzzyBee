@@ -18,6 +18,10 @@
 #include <libetc.h>
 #include "graphics.h"
 
+
+#define DEBUGMODE 1
+#define DEBUG 1
+
 GsOT 		orderingTable[2];
 GsOT_TAG  	minorOrderingTable[2][1<<OT_LENGTH];
 PACKET 		GPUOutputPacket[2][PACKETMAX];
@@ -51,7 +55,7 @@ Image createImage(unsigned char imageData[]) {
 	image.sprite.attribute = 0x1000000; 			// (0x1 = 8-bit, 0x2 = 16-bit)
 	image.sprite.x = 0;                         	// draw at x coord
 	image.sprite.y = 0;                          	// draw at y coord
-	image.sprite.w = image.tim_data.pw * 2;         	// width of sprite
+	image.sprite.w = image.tim_data.pw * 2;         // width of sprite
 	image.sprite.h = image.tim_data.ph;             // height of sprite
 	if (DEBUG) { printf("Sprite mes {attribute = %d, x=%d, y=%d, w=%d, h=%d}\n", image.sprite.attribute, image.sprite.x, image.sprite.y, image.sprite.w, image.sprite.h); }
 
@@ -66,12 +70,12 @@ Image createImage(unsigned char imageData[]) {
 	image.sprite.r = 128;							// color red blend
 	image.sprite.g = 128;							// color green blend
 	image.sprite.b = 128;							// color blue blend
-	image.sprite.u=(image.tim_data.px - 320) * 2;                               // position within timfile for sprite
-	image.sprite.v=image.tim_data.py;								// position within timfile for sprite
+	image.sprite.u=(image.tim_data.px - 320) * 2;   // position within timfile for sprite
+	image.sprite.v=image.tim_data.py;				// position within timfile for sprite
 	image.sprite.cx = image.tim_data.cx;            // CLUT location x
 	image.sprite.cy = image.tim_data.cy;            // CLUT location y
-	image.sprite.mx = image.sprite.w/2;                            // rotation x coord
-	image.sprite.my = image.sprite.h/2;                            // rotation y coord
+	image.sprite.mx = image.sprite.w/2;             // rotation x coord
+	image.sprite.my = image.sprite.h/2;             // rotation y coord
 	image.sprite.scalex = ONE;                      // scale x (ONE = 100%)
 	image.sprite.scaley = ONE;                      // scale y (ONE = 100%)
 	image.sprite.rotate = 0;                        // rotation
@@ -181,9 +185,6 @@ void setScreenMode(int mode) {
      	SetVideoMode(0);
      	if (DEBUGMODE) { printf("Video Mode is (%d)\n",GetVideoMode()); }
    }
-   //double Init...
-	//GsInitGraph(SCREEN_WIDTH, SCREEN_HEIGHT, GsINTER|GsOFSGPU, 1, 0);
-	//GsDefDispBuff(0, 0, 0, SCREEN_HEIGHT);
 }
 
 void setBackgroundColor(Color color) {
@@ -200,8 +201,7 @@ void initializeScreen() {
 	clearVRAM();
 	GsInitGraph(SCREEN_WIDTH, SCREEN_HEIGHT, GsINTER|GsOFSGPU, 1, 0); //Set up interlation..
 	GsDefDispBuff(0, 0, 0, SCREEN_HEIGHT);	//..and double buffering.
-    //GsInit3D();
-	systemBackgroundColor = createColor(0, 0, 255);
+	systemBackgroundColor = createColor(0, 0, 0);
 	initializeOrderingTable();
 }
 

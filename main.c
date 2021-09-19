@@ -50,31 +50,44 @@ SOFTWARE.
 #define __ramsize   0x00200000
 #define __stacksize 0x00004000
 
-Image gameStartGraphic;
 
 // Global timer
 PSXTimer mainTimer;
 
 typedef struct{
-    Image current_sprite;
-    int frame_n;
-    int total_frames;
+    int frame_n;            // this is the current frame
+    int index;
+    int total_frames;       // this is the total frame
     int y_pos;
     int x_pos;
     int x_vel;
     int y_vel;
     int anim_rate; // how many vsyncs
-} animatedObject;
+    Image *img_list;   // make this a list of Image (ok)
+} AnimatedObject;
 
-animatedObject mainPlayer;
+AnimatedObject mainPlayer;
+Image mainPlayerL[4];
 
-unsigned char *img_beepsrites[] = { img_bee_0, img_bee_1, img_bee_2, img_bee_1 };
-//unsigned char *img_beepsrites[2] = { &img_beesprite0, &img_beesprite1 };
+AnimatedObject pressStart;
+Image pressStartL[3];
+
+AnimatedObject Bee;
+Image BeeL[1];
+
+AnimatedObject Buzzy;
+Image BuzzyL[1];
+
+AnimatedObject jam;
+Image jamL[3];
+
 
 void initialize();
 void startScreen();
 void gameScreen();
 void initPlayer();
+void initIntro();
+void animate(AnimatedObject *animatedObj);
 
 void initialize() {
 	initializeScreen();
@@ -86,19 +99,19 @@ void initialize() {
     in_update(); // should not be needed but there is a bug without it
 	//initializeDebugFont();
     initPlayer();
+    initIntro();
     //load sprites
 }
 
-#define factor 1024
+// scaling the graphics (example video width is 320px but "game world" is 320 x factor)
+#define factor 1024     
 #define GRAVITY factor / 8
 #define MAXSPEED factor
-
 #define MAXFLAP 5 * factor
-
 #define SPRITEHEIGHT 30
 #define GROUND (SCREEN_HEIGHT-20-30) * factor
-
 #define CEILING (SPRITEHEIGHT)
+int a, b, c = 0; // a is for bringing in Buzzy, b for bringing in Bee, c from bringing in Jam
 
 int gameState = 0; // 0 = start state, 1 = play state, 2 = pause
 
@@ -129,57 +142,138 @@ void updateAnimation(){
         mainPlayer.y_pos = CEILING;
         mainPlayer.y_vel = 0;
     }
-
     // animate
-    if (mainTimer.vsync % mainPlayer.anim_rate == 0) {
-        mainPlayer.frame_n++;
-        mainPlayer.current_sprite = createImage(img_beepsrites[mainPlayer.frame_n % (mainPlayer.total_frames)]);
-    }
-    mainPlayer.current_sprite = moveImage(mainPlayer.current_sprite, mainPlayer.x_pos / factor, mainPlayer.y_pos /factor);
-    drawImage(mainPlayer.current_sprite);
+    animate(&mainPlayer);
 }
 
 void gameScreen(){
-    gameStartGraphic = createImage(img_a_BuzzyBee);
-    gameStartGraphic = moveImage(gameStartGraphic, SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
-    drawImage(gameStartGraphic);
+        printf("%i, %i, %i\n", a,b,c);
+    int Buzzy_limit = (BuzzyL[0].sprite.w / 2) * factor;
+    if (Buzzy.x_pos < Buzzy_limit) {
+        Buzzy.x_pos += Buzzy.x_vel;
+    }
+    else {    
+        a = 1;
+    }
+
+    int Bee_limit = (SCREEN_WIDTH/2 + BeeL[0].sprite.w / 2 + 10) * factor;
+    if (Bee.x_pos > Bee_limit) {
+        Bee.x_pos += Bee.x_vel;    
+    }
+    else {
+        b = 1;
+    }
+    if (a + b == 2) {
+        int jam_limit = 150 * factor;
+        if (jam.y_pos > jam_limit) {
+            jam.y_pos += jam.y_vel;    
+        }
+        else {
+            c = 1;
+        }
+        animate(&jam);
+    }
+
+    if (c) {
+        animate(&pressStart);
+    }
+    animate(&Bee);
+    animate(&Buzzy);
+}
+
+void animate(AnimatedObject *animatedObj){
+    Image toDraw;
+    if (mainTimer.vsync % animatedObj->anim_rate == 0) {
+        animatedObj->frame_n++;
+        animatedObj->index = animatedObj->frame_n % animatedObj->total_frames;
+    }
+    toDraw = moveImage(animatedObj->img_list[animatedObj->index], animatedObj->x_pos / factor, animatedObj->y_pos / factor);
+    drawImage(toDraw);
 }
 
 void initPlayer(){
-    mainPlayer.current_sprite = createImage(img_beepsrites[0]);
     mainPlayer.total_frames = 4;
-    mainPlayer.y_pos = GROUND * factor;
+    mainPlayer.frame_n = 0;
+    mainPlayer.index = 0;
+    mainPlayer.y_pos = (SCREEN_HEIGHT * 3 / 4) * factor;
     mainPlayer.x_pos = (SCREEN_WIDTH / 4) * factor;
     mainPlayer.y_vel, mainPlayer.x_vel = 0;
     mainPlayer.anim_rate = 4;
+    mainPlayerL[0] = createImage(img_bee_0);
+    mainPlayerL[1] = createImage(img_bee_1);
+    mainPlayerL[2] = createImage(img_bee_2);
+    mainPlayerL[3] = mainPlayerL[1];
+    mainPlayer.img_list = mainPlayerL;
+}
+
+void initIntro(){
+    pressStart.total_frames = 2; // third frame is reserved
+    pressStart.frame_n = 0;
+    pressStart.index = 0;
+    pressStart.y_pos = (SCREEN_HEIGHT * 3 / 4) * factor;
+    pressStart.x_pos = (SCREEN_WIDTH / 2) * factor;
+    pressStart.y_vel, pressStart.x_vel = 0;
+    pressStart.anim_rate = 25;
+    pressStartL[0] = createImage(img_Press_start1);
+    pressStartL[1] = createImage(img_Press_start2);
+    pressStartL[2] = createImage(img_Press_start3);
+    pressStart.img_list = pressStartL;
+
+
+    Buzzy.total_frames = 1; 
+    Buzzy.frame_n = 0;
+    Buzzy.index = 0;
+    Buzzy.x_pos = (5) * factor;
+    Buzzy.y_vel = 0;
+    Buzzy.x_vel = 3 * factor;
+    Buzzy.anim_rate = 1;
+    BuzzyL[0] = createImage(img_Buzzy);
+    Buzzy.y_pos = (BuzzyL[0].sprite.h / 3) * factor;
+    Buzzy.x_pos = (-BuzzyL[0].sprite.w/2) * factor;
+    Buzzy.img_list = BuzzyL;
+
+    Bee.total_frames = 1; // third frame is reserved
+    Bee.frame_n = 0;
+    Bee.index = 0;
+    Bee.y_vel = 0;
+    Bee.x_vel = -2 * factor;
+    Bee.anim_rate = 1;
+    BeeL[0] = createImage(img_Bee);
+    Bee.y_pos = (BeeL[0].sprite.h) * factor;
+    Bee.x_pos = (SCREEN_WIDTH + BeeL[0].sprite.w/2) * factor;
+    Bee.img_list = BeeL;
+
+    jam.total_frames = 3; // third frame is reserved
+    jam.frame_n = 0;
+    jam.index = 0;
+    jam.y_vel = -1 * factor;
+    jam.x_vel = 0;
+    jam.anim_rate = 10;
+    jamL[0] = createImage(img_jam_1);
+    jamL[1] = createImage(img_jam_2);
+    jamL[2] = createImage(img_jam_3);
+    jam.y_pos = SCREEN_HEIGHT * factor;
+    jam.x_pos = (SCREEN_WIDTH / 2) * factor;
+    jam.img_list = jamL;
 }
 
 int main() {
     initialize();
-    printf("BuzzyBee v0.11\n");
-
-    Box frame;
-    frame = createBox(createColor(200, 155, 155), 20, 20, 320-20, 240-20);
+    printf("BuzzyBee v0.12 New Animation routine\n");
     mainTimer = createTimer();
-
     while (1) {
         in_update();
         clearDisplay();
         if (gameState == 1){
             updateAnimation();
-                    
         }
         else if (gameState == 0){
             gameScreen();
             if (input_trig & PAD_START) {
                 audioPlay(SPU_1CH, 0x1000);
                 gameState = 1;
-                }
+            }
         }
-
-        //mainPlayer.current_sprite = moveImage(mainPlayer.current_sprite, mainPlayer.x_pos/, mainPlayer.y_pos);
-        
-        drawBox(frame);
         flushDisplay(); // dump it to the screen
         mainTimer = incTimer(mainTimer);
     }
