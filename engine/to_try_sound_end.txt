@@ -1,0 +1,3 @@
+#define SPU_KEY_END ((volatile unsigned int *)(0x1F801D9C))
+...
+if (*SPU_KEY_END & voice) { voice stopped }

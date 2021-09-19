@@ -1,0 +1,7 @@
+// mode is 2 for 16-bit, 1 for 8-bit and 0 for 4-bit color
+const int shift = 2 - mode;
+const int tpage_x = tim_vram_x & 0x3C0;
+const int tpage_y = tim_vram_y & 0x100;
+image->tpage = getTPage(mode, 0, tpage_x, tpage_y);
+image->u = ((tim_vram_x - tpage_x) << shift) + frame_offset_x;
+image->v = (tim_vram_y - tpage_y) + frame_offset_y;
