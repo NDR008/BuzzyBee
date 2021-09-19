@@ -86,8 +86,10 @@ void initialize();
 void startScreen();
 void gameStart();
 void gameMode();
+void debug14Mode();
 void initPlayer();
 void initIntro();
+void debugMode();
 void animate(AnimatedObject *animatedObj);
 
 void initialize() {
@@ -191,6 +193,15 @@ void animate(AnimatedObject *animatedObj){
     drawImage(toDraw);
 }
 
+void debugMode(){
+    Image debugJam = createImage(img_jam_1);
+    Image debugBee = createImage(img_bee_0);    
+    debugBee = moveImage(debugBee, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);    
+    
+    drawImage(debugJam);
+    drawImage(debugBee);
+}
+
 void initPlayer(){
     mainPlayer.total_frames = 4;
     mainPlayer.frame_n = 0;
@@ -269,11 +280,22 @@ int main() {
         }
         else if (gameState == 0){
             gameStart();
-            if (input_trig & PAD_START) {
-                audioPlay(SPU_1CH, 0x1000);
-                gameState = 1;
-            }
         }
+        else if (gameState == 99){
+            debugMode();
+        }
+
+        
+        if (input_trig & PAD_START) {
+            audioPlay(SPU_1CH, 0x1000);
+            gameState = 1;
+        }
+        if (input_trig & PAD_SELECT) {
+            gameState = 99;
+        }
+
+        printf("Game mode %i\n", gameState);
+
         flushDisplay(); // dump it to the screen
         mainTimer = incTimer(mainTimer);
     }
