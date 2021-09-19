@@ -271,7 +271,7 @@ void initIntro(){
 
 int main() {
     initialize();
-    printf("BuzzyBee v0.12 New Animation routine\n");
+    printf("BuzzyBee v0.13 New Animation routine\n");
     mainTimer = createTimer();
     while (1) {
         in_update();
@@ -295,7 +295,7 @@ int main() {
             gameState = 99;
         }
 
-        printf("Game mode %i\n", gameState);
+        //printf("Game mode %i\n", gameState);
 
         flushDisplay(); // dump it to the screen
         mainTimer = incTimer(mainTimer);

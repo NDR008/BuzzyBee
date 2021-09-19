@@ -2,11 +2,12 @@
  * basics.c
  *
  *  Created on: Dec 19, 2020
- *  Modified on: Sept 6, 2021
+ *  Modified on: Sept 19, 2021
  *      Author: NDR008
  *		Strong based on work of: 
  *      Author: Wituz
- * 		fixed the include crap
+ * 		fixed with help of Schnappy, and fgsfds
+ *      moral support from Sickle and crimester (somehow)
  */
 
 #include <sys/types.h>
@@ -60,7 +61,7 @@ Image createImage(unsigned char imageData[]) {
 	if (DEBUG) { printf("Sprite mes {attribute = %d, x=%d, y=%d, w=%d, h=%d}\n", image.sprite.attribute, image.sprite.x, image.sprite.y, image.sprite.w, image.sprite.h); }
 
 	image.sprite.tpage = GetTPage(
-			1,   									// 0=4-bit, 1=8-bit, 2=16-bit
+			image.tim_data.pmode & 0x3,						// 0=4-bit, 1=8-bit, 2=16-bit
 			1,   									// semitransparency rate
 			image.tim_data.px, 						// framebuffer pixel x
 			image.tim_data.py  						// framebuffer pixel y
@@ -70,8 +71,10 @@ Image createImage(unsigned char imageData[]) {
 	image.sprite.r = 128;							// color red blend
 	image.sprite.g = 128;							// color green blend
 	image.sprite.b = 128;							// color blue blend
-	image.sprite.u=(image.tim_data.px - 320) * 2;   // position within timfile for sprite
-	image.sprite.v=image.tim_data.py;				// position within timfile for sprite
+	image.sprite.u=(image.tim_data.px - 320) * 2;   // position within timfile for sprite <-- works w/o overlap
+    //image.sprite.u = image.tim_data.px - ( image.sprite.tpage < 16 ? image.sprite.tpage * 64 : (image.sprite.tpage - 16) * 64 );  // works w/o overlap
+    // image.sprite.u = (image.tim_data.px << 2) & 0xFF;  // broken on non-overlapped
+	image.sprite.v = image.tim_data.py;				// position within timfile for sprite
 	image.sprite.cx = image.tim_data.cx;            // CLUT location x
 	image.sprite.cy = image.tim_data.cy;            // CLUT location y
 	image.sprite.mx = image.sprite.w/2;             // rotation x coord
