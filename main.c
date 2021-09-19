@@ -195,6 +195,7 @@ void animate(AnimatedObject *animatedObj){
 
 void debugMode(){
     Image debugJam = createImage(img_jam_1);
+    debugJam = moveImage(debugJam, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 4);    
     Image debugBee = createImage(img_bee_0);    
     debugBee = moveImage(debugBee, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);    
     
