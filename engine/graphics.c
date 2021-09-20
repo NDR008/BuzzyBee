@@ -19,6 +19,10 @@
 #include <libetc.h>
 #include "graphics.h"
 
+#define OT_LENGTH 1
+#define PACKETMAX 3000
+#define __ramsize   0x00200000
+#define __stacksize 0x00004000
 
 #define DEBUGMODE 1
 #define DEBUG 0
@@ -203,7 +207,7 @@ void initializeScreen() {
 	SetDispMask(1);
 	ResetGraph(0);
 	clearVRAM();
-	GsInitGraph(SCREEN_WIDTH, SCREEN_HEIGHT, GsINTER|GsOFSGPU, 1, 0); //Set up interlation..
+	GsInitGraph(SCREEN_WIDTH, SCREEN_HEIGHT, GsNONINTER|GsOFSGPU, 1, 0); //Set up interlation..
 	GsDefDispBuff(0, 0, 0, SCREEN_HEIGHT);	//..and double buffering.
 	systemBackgroundColor = createColor(0, 0, 0);
 	initializeOrderingTable();

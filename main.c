@@ -160,10 +160,10 @@ void gameMode(){
         clouds1[i].x_pos += clouds1[i].x_vel;
         clouds2[i].x_pos += clouds2[i].x_vel;
         if (clouds1[i].x_pos < - 50 * factor){
-            clouds1[i].x_pos = (400 + rand() % 50) *factor;
+            clouds1[i].x_pos = (400 + rand() % 150) *factor;
         }
         if (clouds2[i].x_pos < - 100 * factor){
-            clouds2[i].x_pos = (450 + rand() % 50) *factor;
+            clouds2[i].x_pos = (450 + rand() % 350) *factor;
         }
         animate(&clouds1[i]);
         animate(&clouds2[i]);
@@ -278,7 +278,7 @@ void initSky(){
 
         int x2 = rand() % (100) * factor;
         int y2 = (10+ rand() % 20) * factor;
-        int s2 = (1 + rand() % 2) * factor;
+        int s2 = (2 + rand() % 3) * factor;
 
         clouds1[s].total_frames =1;
         clouds2[s].total_frames = 1;
@@ -360,7 +360,7 @@ void initIntro(){
 
 int main() {
   initialize();
-    printf("BuzzyBee v0.13 New Animation routine\n");
+    printf("BuzzyBee v0.2 New Animation routine\n");
     mainTimer = createTimer();
     int time1;
     while (1) {
