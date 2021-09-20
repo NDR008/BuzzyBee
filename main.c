@@ -78,6 +78,7 @@ Image jamL[3];
 AnimatedObject ground[6];
 Image groundL[6][1];
 
+
 AnimatedObject clouds1[3];
 Image clouds1L[3][1];
 AnimatedObject clouds2[3];
@@ -97,14 +98,14 @@ void initSky();
 
 void initialize() {
 	initializeScreen();
-    setBackgroundColor(createColor(30, 30, 30));
+    setBackgroundColor(createColor(0, 0, 0));
     audioInit();
     audioTransferVagToSPU(buzz1, buzz1_size, SPU_1CH);
     audioTransferVagToSPU(menustart, menustart_size, SPU_0CH);
 
     in_init();  // init inputs
     in_update(); // should not be needed but there is a bug without it
-	//initializeDebugFont();
+	initializeDebugFont();
     initPlayer();
     initBackground();
     initSky();
@@ -153,6 +154,8 @@ void gameMode(){
         mainPlayer.y_vel = 0;
     }
 
+    // this blog corrupts shit
+    
     for (int i = 0; i < 3; i++){
         clouds1[i].x_pos += clouds1[i].x_vel;
         clouds2[i].x_pos += clouds2[i].x_vel;
@@ -165,6 +168,7 @@ void gameMode(){
         animate(&clouds1[i]);
         animate(&clouds2[i]);
     }
+    
 
     
     for (int i=0; i<6; i++){
@@ -276,10 +280,14 @@ void initSky(){
         int y2 = (10+ rand() % 20) * factor;
         int s2 = (1 + rand() % 2) * factor;
 
-        clouds1[s].total_frames, clouds2[s].total_frames = 1;
-        clouds1[s].frame_n, clouds2[s].frame_n = 0;
-        clouds1[s].index, clouds2[s].frame_n = 0;
-        clouds1[s].y_vel, clouds2[s].y_vel = 0;
+        clouds1[s].total_frames =1;
+        clouds2[s].total_frames = 1;
+        clouds1[s].frame_n = 0;
+        clouds2[s].frame_n = 0;
+        clouds1[s].index = 0;
+        clouds2[s].index = 0;
+        clouds1[s].y_vel = 0;
+        clouds2[s].y_vel = 0;
 
         clouds1[s].y_pos = y1;
         clouds2[s].y_pos = y2;
@@ -288,7 +296,8 @@ void initSky(){
         clouds1[s].x_vel = -s1;
         clouds2[s].x_vel = -s2;
 
-        clouds1[s].anim_rate, clouds2[s].anim_rate  = 99;
+        clouds1[s].anim_rate = 99;
+        clouds2[s].anim_rate = 99;
 
         clouds1L[s][0] = createImage(img_cloud_B);
         clouds2L[s][0] = createImage(img_cloud_E);
@@ -350,7 +359,7 @@ void initIntro(){
 }
 
 int main() {
-    initialize();
+  initialize();
     printf("BuzzyBee v0.13 New Animation routine\n");
     mainTimer = createTimer();
     int time1;

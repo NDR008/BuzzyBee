@@ -15,7 +15,7 @@
 #include <libgs.h>
 
 #define OT_LENGTH 1
-#define PACKETMAX 300
+#define PACKETMAX 3000
 #define __ramsize   0x00200000
 #define __stacksize 0x00004000
 
