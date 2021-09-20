@@ -275,15 +275,20 @@ int main() {
     initialize();
     printf("BuzzyBee v0.13 New Animation routine\n");
     mainTimer = createTimer();
+    int time1;
     while (1) {
-        int time = mainTimer.totalsec;
+        int time2 = mainTimer.totalsec;
         in_update();
         clearDisplay();
         if (gameState == 1){
-            gameMode();
+            if (time2-time1 > 1){
+                gameMode();
+            }
+            else{
+                gameStart();
+            }
         }
         else if (gameState == 0){
-            audioPlay(SPU_0CH, 0x1000);
             gameStart();
         }
         else if (gameState == 99){
@@ -291,6 +296,10 @@ int main() {
         }
 
         if (input_trig & PAD_START) {
+            audioPlay(SPU_0CH, 0x1000);
+            time1 = mainTimer.totalsec;
+            pressStart.total_frames = 3;
+            pressStart.anim_rate = 5;
             gameState = 1;
         }
         if (input_trig & PAD_SELECT) {
