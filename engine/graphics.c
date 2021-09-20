@@ -21,7 +21,7 @@
 
 
 #define DEBUGMODE 1
-#define DEBUG 1
+#define DEBUG 0
 
 GsOT 		orderingTable[2];
 GsOT_TAG  	minorOrderingTable[2][1<<OT_LENGTH];

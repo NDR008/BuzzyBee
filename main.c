@@ -45,13 +45,6 @@ SOFTWARE.
 #include "sound/sfx/buzz1.h"
 #include "sound/sfx/menustart.h"
 
-// Global system
-#define OT_LENGTH 1
-#define PACKETMAX 300
-#define __ramsize   0x00200000
-#define __stacksize 0x00004000
-
-
 // Global timer
 PSXTimer mainTimer;
 
@@ -82,6 +75,13 @@ Image BuzzyL[1];
 AnimatedObject jam;
 Image jamL[3];
 
+AnimatedObject ground[6];
+Image groundL[6][1];
+
+AnimatedObject clouds1[3];
+Image clouds1L[3][1];
+AnimatedObject clouds2[3];
+Image clouds2L[3][1];
 
 void initialize();
 void startScreen();
@@ -92,6 +92,8 @@ void initPlayer();
 void initIntro();
 void debugMode();
 void animate(AnimatedObject *animatedObj);
+void initBackground();
+void initSky();
 
 void initialize() {
 	initializeScreen();
@@ -104,27 +106,30 @@ void initialize() {
     in_update(); // should not be needed but there is a bug without it
 	//initializeDebugFont();
     initPlayer();
+    initBackground();
+    initSky();
     initIntro();
     //load sprites
 }
 
 // scaling the graphics (example video width is 320px but "game world" is 320 x factor)
 #define factor 1024     
-#define GRAVITY factor / 8
+#define GRAVITY factor / 4
 #define MAXSPEED factor
-#define MAXFLAP 5 * factor
+#define MAXFLAP 6 * factor
 #define SPRITEHEIGHT 30
-#define GROUND (SCREEN_HEIGHT-20-30) * factor
+#define GROUND (SCREEN_HEIGHT-80) * factor
 #define CEILING (SPRITEHEIGHT)
 int a, b, c = 0; // a is for bringing in Buzzy, b for bringing in Bee, c from bringing in Jam
 
 int gameState = 0; // 0 = start state, 1 = play state, 2 = pause
 
 void gameMode(){   
+    setBackgroundColor(createColor(100, 100, 200));
     // if we pressu jump...
     if (input_trig & PAD_CROSS) {
         audioPlay(SPU_1CH, 0x1000);
-        mainPlayer.y_vel -= MAXFLAP;
+        mainPlayer.y_vel -= MAXFLAP/2;
         if (mainPlayer.y_vel < -MAXFLAP) {
             mainPlayer.y_vel = MAXFLAP;
         }
@@ -147,11 +152,34 @@ void gameMode(){
         mainPlayer.y_pos = CEILING;
         mainPlayer.y_vel = 0;
     }
-    // animate
+
+    for (int i = 0; i < 3; i++){
+        clouds1[i].x_pos += clouds1[i].x_vel;
+        clouds2[i].x_pos += clouds2[i].x_vel;
+        if (clouds1[i].x_pos < - 50 * factor){
+            clouds1[i].x_pos = (400 + rand() % 50) *factor;
+        }
+        if (clouds2[i].x_pos < - 100 * factor){
+            clouds2[i].x_pos = (450 + rand() % 50) *factor;
+        }
+        animate(&clouds1[i]);
+        animate(&clouds2[i]);
+    }
+
+    
+    for (int i=0; i<6; i++){
+        ground[i].x_pos += ground[i].x_vel;
+        if (ground[i].x_pos + 40 * factor <= 0){
+            ground[i].x_pos = (80*6-41)*factor;
+        }
+        animate(&ground[i]);
+    }
+
     animate(&mainPlayer);
 }
 
 void gameStart(){
+    setBackgroundColor(createColor(0, 0, 0));
     int Buzzy_limit = (BuzzyL[0].sprite.w / 2) * factor;
     if (Buzzy.x_pos < Buzzy_limit) {
         Buzzy.x_pos += Buzzy.x_vel;
@@ -196,6 +224,7 @@ void animate(AnimatedObject *animatedObj){
 }
 
 void debugMode(){
+    setBackgroundColor(createColor(50, 50, 0));
     Image debugJam = createImage(img_jam_1);
     debugJam = moveImage(debugJam, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 4);    
     Image debugBee = createImage(img_bee_0);    
@@ -218,6 +247,55 @@ void initPlayer(){
     mainPlayerL[2] = createImage(img_bee_2);
     mainPlayerL[3] = mainPlayerL[1];
     mainPlayer.img_list = mainPlayerL;
+}
+
+void initBackground(){
+    for (int s=0; s<6; s++){
+        AnimatedObject tmp;
+        ground[s].total_frames = 1;
+        ground[s].frame_n = 0;
+        ground[s].index = 0;
+        ground[s].y_pos = (SCREEN_HEIGHT - 30) * factor;
+        ground[s].x_pos = (s*80-40) * factor;
+        ground[s].y_vel = 0;
+        ground[s].x_vel = -1 * factor;
+        ground[s].anim_rate = 99;
+        groundL[s][0] = createImage(img_gnd_0);
+        ground[s].img_list = groundL[s];
+    }
+}
+
+void initSky(){
+    srand(1);
+    for (int s=0; s<3; s++){
+        int x1 = rand() % (100) * factor;
+        int y1 = (10+ rand() % 20) * factor;
+        int s1 = (1 + rand() % 2) * factor;
+
+        int x2 = rand() % (100) * factor;
+        int y2 = (10+ rand() % 20) * factor;
+        int s2 = (1 + rand() % 2) * factor;
+
+        clouds1[s].total_frames, clouds2[s].total_frames = 1;
+        clouds1[s].frame_n, clouds2[s].frame_n = 0;
+        clouds1[s].index, clouds2[s].frame_n = 0;
+        clouds1[s].y_vel, clouds2[s].y_vel = 0;
+
+        clouds1[s].y_pos = y1;
+        clouds2[s].y_pos = y2;
+        clouds1[s].x_pos = x1;
+        clouds2[s].x_pos = x2;
+        clouds1[s].x_vel = -s1;
+        clouds2[s].x_vel = -s2;
+
+        clouds1[s].anim_rate, clouds2[s].anim_rate  = 99;
+
+        clouds1L[s][0] = createImage(img_cloud_B);
+        clouds2L[s][0] = createImage(img_cloud_E);
+
+        clouds1[s].img_list = clouds1L[s];
+        clouds2[s].img_list = clouds2L[s];
+    }
 }
 
 void initIntro(){
@@ -281,7 +359,7 @@ int main() {
         in_update();
         clearDisplay();
         if (gameState == 1){
-            if (time2-time1 > 1){
+            if (time2-time1 > 0){  // check back to 1;
                 gameMode();
             }
             else{
