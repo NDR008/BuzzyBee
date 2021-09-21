@@ -300,11 +300,11 @@ void initSky(){
     srand(1);
     for (int s=0; s<3; s++){
         int x1 = rand() % (500) * factor;
-        int y1 = (10+ rand() % 20) * factor;
+        int y1 = (20+ rand() % 24) * factor;
         int s1 = (1 + rand() % 2) * factor;
 
         int x2 = rand() % (500) * factor;
-        int y2 = (10+ rand() % 20) * factor;
+        int y2 = (20+ rand() % 24) * factor;
         int s2 = (2 + rand() % 3) * factor;
 
         clouds1[s].total_frames =1;
@@ -395,7 +395,7 @@ int main() {
         in_update();
         clearDisplay();
         if (gameState == 1){
-            if (time2-time1 > 0){  // check back to 1;
+            if (time2-time1 > 1){  // check back to 1;
                 gameMode();
             }
             else{
@@ -410,14 +410,17 @@ int main() {
         }
 
         if (input_trig & PAD_START) {
-            audioPlay(SPU_0CH, 0x1000, 0x1000);
-            time1 = mainTimer.totalsec;
-            pressStart.total_frames = 3;
-            pressStart.anim_rate = 5;
-            gameState = 1;
+            if (gameState == 0){
+                audioPlay(SPU_0CH, 0x1000, 0x1000);
+                time1 = mainTimer.totalsec;
+                pressStart.total_frames = 3;
+                pressStart.anim_rate = 5;
+                gameState = 1;
+            }
         }
-        if (input_trig & PAD_SELECT) {
-            gameState = 99;
+        else if (input_trig & PAD_SELECT) {
+            if (gameState == 99){ gameState = 1;}
+            else if (gameState == 1){ gameState = 99;}
         }
 
         //printf("Game mode %i\n", gameState);
