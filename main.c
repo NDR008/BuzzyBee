@@ -78,6 +78,8 @@ Image jamL[3];
 AnimatedObject ground[6];
 Image groundL[6][1];
 
+AnimatedObject rocks[3];
+Image rocksL[6][1];
 
 AnimatedObject clouds1[3];
 Image clouds1L[3][1];
@@ -95,6 +97,7 @@ void debugMode();
 void animate(AnimatedObject *animatedObj);
 void initBackground();
 void initSky();
+void initRocks();
 
 void initialize() {
 	initializeScreen();
@@ -106,10 +109,13 @@ void initialize() {
     in_init();  // init inputs
     in_update(); // should not be needed but there is a bug without it
 	initializeDebugFont();
+    initIntro();
+
     initPlayer();
     initBackground();
     initSky();
-    initIntro();
+    initRocks();
+
     //load sprites
 }
 
@@ -124,63 +130,6 @@ void initialize() {
 int a, b, c = 0; // a is for bringing in Buzzy, b for bringing in Bee, c from bringing in Jam
 
 int gameState = 0; // 0 = start state, 1 = play state, 2 = pause
-
-void gameMode(){   
-    setBackgroundColor(createColor(100, 100, 200));
-    // if we pressu jump...
-    if (input_trig & PAD_CROSS) {
-        audioPlay(SPU_1CH, 0x1000);
-        mainPlayer.y_vel -= MAXFLAP/2;
-        if (mainPlayer.y_vel < -MAXFLAP) {
-            mainPlayer.y_vel = MAXFLAP;
-        }
-    }
-    // constant desire to go down...
-    mainPlayer.y_vel += GRAVITY;
-    if (mainPlayer.y_vel > MAXSPEED) {
-        mainPlayer.y_vel = MAXSPEED;
-    }
-    
-    // update position
-    mainPlayer.y_pos += mainPlayer.y_vel;
-
-    // hover on the ground limit
-    if (mainPlayer.y_pos > GROUND){
-        mainPlayer.y_pos = GROUND;        
-    }
-    // stay within frame
-    else if (mainPlayer.y_pos < CEILING){
-        mainPlayer.y_pos = CEILING;
-        mainPlayer.y_vel = 0;
-    }
-
-    // this blog corrupts shit
-    
-    for (int i = 0; i < 3; i++){
-        clouds1[i].x_pos += clouds1[i].x_vel;
-        clouds2[i].x_pos += clouds2[i].x_vel;
-        if (clouds1[i].x_pos < - 50 * factor){
-            clouds1[i].x_pos = (400 + rand() % 150) *factor;
-        }
-        if (clouds2[i].x_pos < - 100 * factor){
-            clouds2[i].x_pos = (450 + rand() % 350) *factor;
-        }
-        animate(&clouds1[i]);
-        animate(&clouds2[i]);
-    }
-    
-
-    
-    for (int i=0; i<6; i++){
-        ground[i].x_pos += ground[i].x_vel;
-        if (ground[i].x_pos + 40 * factor <= 0){
-            ground[i].x_pos = (80*6-41)*factor;
-        }
-        animate(&ground[i]);
-    }
-
-    animate(&mainPlayer);
-}
 
 void gameStart(){
     setBackgroundColor(createColor(0, 0, 0));
@@ -215,6 +164,71 @@ void gameStart(){
     }
     animate(&Bee);
     animate(&Buzzy);
+}
+
+void gameMode(){   
+    setBackgroundColor(createColor(100, 100, 200));
+    // if we pressu jump...
+    if (input_trig & PAD_CROSS) {
+        audioPlay(SPU_1CH, 0x0500, 0x1000);
+        mainPlayer.y_vel -= MAXFLAP/2;
+        if (mainPlayer.y_vel < -MAXFLAP) {
+            mainPlayer.y_vel = MAXFLAP;
+        }
+    }
+    // constant desire to go down...
+    mainPlayer.y_vel += GRAVITY;
+    if (mainPlayer.y_vel > MAXSPEED) {
+        mainPlayer.y_vel = MAXSPEED;
+    }
+    
+    // update position
+    mainPlayer.y_pos += mainPlayer.y_vel;
+
+    // hover on the ground limit
+    if (mainPlayer.y_pos > GROUND){
+        mainPlayer.y_pos = GROUND;        
+    }
+    // stay within frame
+    else if (mainPlayer.y_pos < CEILING){
+        mainPlayer.y_pos = CEILING;
+        mainPlayer.y_vel = 0;
+    }
+
+   
+    for (int i = 0; i < 3; i++){
+        clouds1[i].x_pos += clouds1[i].x_vel;
+        clouds2[i].x_pos += clouds2[i].x_vel;
+        if (clouds1[i].x_pos < - 50 * factor){
+            clouds1[i].x_pos = (400 + rand() % 150) *factor;
+        }
+        if (clouds2[i].x_pos < - 100 * factor){
+            clouds2[i].x_pos = (450 + rand() % 350) *factor;
+        }
+        animate(&clouds1[i]);
+        animate(&clouds2[i]);
+    }
+
+    for (int i=0; i < 3; i++){
+        rocks[i].x_pos += rocks[i].x_vel;
+        if (rocks[i].x_pos + 40 * factor <= 0){
+            int x1 = (SCREEN_WIDTH + 150 + rand() % 100) * factor;
+            int y1 = (SCREEN_HEIGHT - 80 - rand() % 100) * factor;
+            rocks[i].y_pos = y1;
+            rocks[i].x_pos = x1;
+        }
+        animate(&rocks[i]);
+    }    
+    
+    for (int i=0; i<6; i++){
+        ground[i].x_pos += ground[i].x_vel;
+        if (ground[i].x_pos + 40 * factor <= 0){
+            ground[i].x_pos = (80*6-41)*factor;
+        }
+        animate(&ground[i]);
+    }
+
+    animate(&mainPlayer);
 }
 
 void animate(AnimatedObject *animatedObj){
@@ -253,9 +267,22 @@ void initPlayer(){
     mainPlayer.img_list = mainPlayerL;
 }
 
+void initRocks(){
+    for (int s=0; s<3; s++){
+        rocks[s].total_frames = 1;
+        rocks[s].frame_n = 0;
+        rocks[s].x_vel = -1 * factor;
+        rocks[s].index = 0;
+        rocks[s].anim_rate = 99;
+        rocks[s].x_pos = (SCREEN_WIDTH + 200 * s + rand() % 100) * factor;
+        rocks[s].y_pos = (SCREEN_HEIGHT - 80 - rand() % 100) * factor;
+        rocksL[s][0] = scaleImage(createImage(img_gnd_1), 50,50);
+        rocks[s].img_list = rocksL[s];
+    }
+}
+
 void initBackground(){
     for (int s=0; s<6; s++){
-        AnimatedObject tmp;
         ground[s].total_frames = 1;
         ground[s].frame_n = 0;
         ground[s].index = 0;
@@ -272,11 +299,11 @@ void initBackground(){
 void initSky(){
     srand(1);
     for (int s=0; s<3; s++){
-        int x1 = rand() % (100) * factor;
+        int x1 = rand() % (500) * factor;
         int y1 = (10+ rand() % 20) * factor;
         int s1 = (1 + rand() % 2) * factor;
 
-        int x2 = rand() % (100) * factor;
+        int x2 = rand() % (500) * factor;
         int y2 = (10+ rand() % 20) * factor;
         int s2 = (2 + rand() % 3) * factor;
 
@@ -383,7 +410,7 @@ int main() {
         }
 
         if (input_trig & PAD_START) {
-            audioPlay(SPU_0CH, 0x1000);
+            audioPlay(SPU_0CH, 0x1000, 0x1000);
             time1 = mainTimer.totalsec;
             pressStart.total_frames = 3;
             pressStart.anim_rate = 5;
