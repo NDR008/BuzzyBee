@@ -64,8 +64,8 @@ void audioTransferVagToSPU(char* sound, int sound_size, int voice_channel) {
     SpuSetVoiceAttr (&g_s_attr);  // this is causing the sound to play
 }
 
-void audioPlay(int voice_channel, unsigned short pitch) {
-    setVoiceVolumePitch(&g_s_attr, voice_channel, 0x1fff, pitch);
+void audioPlay(int voice_channel, unsigned short volume, unsigned short pitch) {
+    setVoiceVolumePitch(&g_s_attr, voice_channel, volume, pitch);
     SpuSetKey(SpuOn, voice_channel);
 }
 
