@@ -88,14 +88,14 @@ Image clouds2L[3][1];
 
 void initialize();
 void startScreen();
-void gameStart();
+void gameIntro();
 void gameMode();
 void debug14Mode();
 void initPlayer();
 void initIntro();
 void debugMode();
 void animate(AnimatedObject *animatedObj);
-void initBackground();
+void initGround();
 void initSky();
 void initRocks();
 
@@ -112,7 +112,7 @@ void initialize() {
     initIntro();
 
     initPlayer();
-    initBackground();
+    initGround();
     initSky();
     initRocks();
 
@@ -124,16 +124,17 @@ void initialize() {
 #define GRAVITY factor / 4
 #define MAXSPEED factor
 #define MAXFLAP 6 * factor
-#define SPRITEHEIGHT 30
-#define GROUND (SCREEN_HEIGHT-80) * factor
+#define SPRITEHEIGHT 18
+#define GROUND (SCREEN_HEIGHT-80 - SPRITEHEIGHT) * factor
 #define CEILING (SPRITEHEIGHT)
 int a, b, c = 0; // a is for bringing in Buzzy, b for bringing in Bee, c from bringing in Jam
 
 int gameState = 0; // 0 = start state, 1 = play state, 2 = pause
 
-void gameStart(){
+// modified for 0,0 origin
+void gameIntro(){
     setBackgroundColor(createColor(0, 0, 0));
-    int Buzzy_limit = (BuzzyL[0].sprite.w / 2) * factor;
+    const int Buzzy_limit = (20) * factor;
     if (Buzzy.x_pos < Buzzy_limit) {
         Buzzy.x_pos += Buzzy.x_vel;
     }
@@ -141,7 +142,7 @@ void gameStart(){
         a = 1;
     }
 
-    int Bee_limit = (SCREEN_WIDTH/2 + BeeL[0].sprite.w / 2 + 10) * factor;
+    const int Bee_limit = (SCREEN_WIDTH - 20 - Bee.img_list[0].sprite.w) * factor;
     if (Bee.x_pos > Bee_limit) {
         Bee.x_pos += Bee.x_vel;    
     }
@@ -166,9 +167,10 @@ void gameStart(){
     animate(&Buzzy);
 }
 
+// need to fix
 void gameMode(){   
     setBackgroundColor(createColor(100, 100, 200));
-    // if we pressu jump...
+    // if we press X to jump...
     if (input_trig & PAD_CROSS) {
         audioPlay(SPU_1CH, 0x0500, 0x1000);
         mainPlayer.y_vel -= MAXFLAP/2;
@@ -195,7 +197,7 @@ void gameMode(){
         mainPlayer.y_vel = 0;
     }
 
-   
+   // magically still works
     for (int i = 0; i < 3; i++){
         clouds1[i].x_pos += clouds1[i].x_vel;
         clouds2[i].x_pos += clouds2[i].x_vel;
@@ -209,21 +211,24 @@ void gameMode(){
         animate(&clouds2[i]);
     }
 
+    // fixed
     for (int i=0; i < 3; i++){
         rocks[i].x_pos += rocks[i].x_vel;
-        if (rocks[i].x_pos + 40 * factor <= 0){
-            int x1 = (SCREEN_WIDTH + 150 + rand() % 100) * factor;
-            int y1 = (SCREEN_HEIGHT - 80 - rand() % 100) * factor;
+        if (rocks[i].x_pos + 80 * factor <= 0){
+            int x1 = (SCREEN_WIDTH + 50 + rand() % 100) * factor;
+            int y1 = (SCREEN_HEIGHT - 100 - rand() % 100) * factor;
             rocks[i].y_pos = y1;
             rocks[i].x_pos = x1;
         }
         animate(&rocks[i]);
     }    
     
+    // fixed new origin of 0,0
+    const int ground_width = ground[0].img_list[0].sprite.w;
     for (int i=0; i<6; i++){
         ground[i].x_pos += ground[i].x_vel;
-        if (ground[i].x_pos + 40 * factor <= 0){
-            ground[i].x_pos = (80*6-41)*factor;
+        if (ground[i].x_pos + ground_width * factor <= 0){
+            ground[i].x_pos = (SCREEN_WIDTH)*factor;
         }
         animate(&ground[i]);
     }
@@ -241,23 +246,25 @@ void animate(AnimatedObject *animatedObj){
     drawImage(toDraw);
 }
 
+
 void debugMode(){
-    setBackgroundColor(createColor(50, 50, 0));
+    setBackgroundColor(createColor(15, 15, 15)); // why not?
     Image debugJam = createImage(img_jam_1);
-    debugJam = moveImage(debugJam, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 4);    
+    debugJam = moveImage(debugJam, SCREEN_WIDTH / 2 - debugJam.sprite.w/2, SCREEN_HEIGHT / 4);    
     Image debugBee = createImage(img_bee_0);    
-    debugBee = moveImage(debugBee, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);    
+    debugBee = moveImage(debugBee, SCREEN_WIDTH / 2  - debugBee.sprite.h/2, SCREEN_HEIGHT / 2);    
     
     drawImage(debugJam);
     drawImage(debugBee);
 }
 
+// fixed
 void initPlayer(){
     mainPlayer.total_frames = 4;
     mainPlayer.frame_n = 0;
     mainPlayer.index = 0;
-    mainPlayer.y_pos = (SCREEN_HEIGHT * 3 / 4) * factor;
-    mainPlayer.x_pos = (SCREEN_WIDTH / 4) * factor;
+    mainPlayer.y_pos = GROUND;
+    mainPlayer.x_pos = 10 * factor;
     mainPlayer.y_vel, mainPlayer.x_vel = 0;
     mainPlayer.anim_rate = 4;
     mainPlayerL[0] = createImage(img_bee_0);
@@ -267,6 +274,7 @@ void initPlayer(){
     mainPlayer.img_list = mainPlayerL;
 }
 
+// fixed
 void initRocks(){
     for (int s=0; s<3; s++){
         rocks[s].total_frames = 1;
@@ -274,25 +282,26 @@ void initRocks(){
         rocks[s].x_vel = -1 * factor;
         rocks[s].index = 0;
         rocks[s].anim_rate = 99;
-        rocks[s].x_pos = (SCREEN_WIDTH + 200 * s + rand() % 100) * factor;
-        rocks[s].y_pos = (SCREEN_HEIGHT - 80 - rand() % 100) * factor;
+        rocks[s].x_pos = (SCREEN_WIDTH * s + 50 + rand() % 100) * factor;
+        rocks[s].y_pos = (SCREEN_HEIGHT - 100 - rand() % 100) * factor;
         rocksL[s][0] = scaleImage(createImage(img_gnd_1), 50,50);
         rocks[s].img_list = rocksL[s];
     }
 }
 
-void initBackground(){
-    for (int s=0; s<6; s++){
-        ground[s].total_frames = 1;
-        ground[s].frame_n = 0;
-        ground[s].index = 0;
-        ground[s].y_pos = (SCREEN_HEIGHT - 30) * factor;
-        ground[s].x_pos = (s*80-40) * factor;
-        ground[s].y_vel = 0;
-        ground[s].x_vel = -1 * factor;
-        ground[s].anim_rate = 99;
-        groundL[s][0] = createImage(img_gnd_0);
-        ground[s].img_list = groundL[s];
+//fixed
+void initGround(){
+    for (int ind=0; ind<6; ind++){
+        ground[ind].total_frames = 1;
+        ground[ind].frame_n = 0;
+        ground[ind].index = 0;
+        ground[ind].y_vel = 0;
+        ground[ind].x_vel = -1 * factor;
+        ground[ind].anim_rate = 99;
+        groundL[ind][0] = createImage(img_gnd_0);
+        ground[ind].img_list = groundL[ind];
+        ground[ind].y_pos = (SCREEN_HEIGHT - ground[0].img_list[0].sprite.h) * factor;
+        ground[ind].x_pos = (ind*ground[0].img_list[0].sprite.w) * factor;
     }
 }
 
@@ -335,19 +344,6 @@ void initSky(){
 }
 
 void initIntro(){
-    pressStart.total_frames = 2; // third frame is reserved
-    pressStart.frame_n = 0;
-    pressStart.index = 0;
-    pressStart.y_pos = (SCREEN_HEIGHT * 3 / 4) * factor;
-    pressStart.x_pos = (SCREEN_WIDTH / 2) * factor;
-    pressStart.y_vel, pressStart.x_vel = 0;
-    pressStart.anim_rate = 25;
-    pressStartL[0] = createImage(img_Press_start1);
-    pressStartL[1] = createImage(img_Press_start2);
-    pressStartL[2] = createImage(img_Press_start3);
-    pressStart.img_list = pressStartL;
-
-
     Buzzy.total_frames = 1; 
     Buzzy.frame_n = 0;
     Buzzy.index = 0;
@@ -356,9 +352,9 @@ void initIntro(){
     Buzzy.x_vel = 3 * factor;
     Buzzy.anim_rate = 1;
     BuzzyL[0] = createImage(img_Buzzy);
-    Buzzy.y_pos = (BuzzyL[0].sprite.h / 3) * factor;
-    Buzzy.x_pos = (-BuzzyL[0].sprite.w/2) * factor;
     Buzzy.img_list = BuzzyL;
+    Buzzy.y_pos = (0) * factor;
+    Buzzy.x_pos = (-BuzzyL[0].sprite.w - 1) * factor;
 
     Bee.total_frames = 1; // third frame is reserved
     Bee.frame_n = 0;
@@ -367,9 +363,9 @@ void initIntro(){
     Bee.x_vel = -2 * factor;
     Bee.anim_rate = 1;
     BeeL[0] = createImage(img_Bee);
-    Bee.y_pos = (BeeL[0].sprite.h) * factor;
-    Bee.x_pos = (SCREEN_WIDTH + BeeL[0].sprite.w/2) * factor;
     Bee.img_list = BeeL;
+    Bee.y_pos = (60) * factor;
+    Bee.x_pos = (SCREEN_WIDTH + 1) * factor;
 
     jam.total_frames = 3; // third frame is reserved
     jam.frame_n = 0;
@@ -380,9 +376,23 @@ void initIntro(){
     jamL[0] = createImage(img_jam_1);
     jamL[1] = createImage(img_jam_2);
     jamL[2] = createImage(img_jam_3);
-    jam.y_pos = SCREEN_HEIGHT * factor;
-    jam.x_pos = (SCREEN_WIDTH / 2) * factor;
     jam.img_list = jamL;
+    jam.y_pos = (SCREEN_HEIGHT - 45) * factor;
+    jam.x_pos = (SCREEN_WIDTH / 2 - jam.img_list[0].sprite.w/2) * factor;
+
+    pressStart.total_frames = 2; // third frame is reserved
+    pressStart.frame_n = 0;
+    pressStart.index = 0;
+    pressStart.y_vel = 0;
+    pressStart.x_vel = 0;
+    pressStart.anim_rate = 15;
+    pressStartL[0] = createImage(img_Press_start1);
+    pressStartL[1] = createImage(img_Press_start2);
+    pressStartL[2] = createImage(img_Press_start3);
+    pressStart.img_list = pressStartL;
+    pressStart.y_pos = (SCREEN_HEIGHT - 55) * factor;
+    pressStart.x_pos = (SCREEN_WIDTH / 2 - pressStart.img_list[0].sprite.w/2) * factor;
+
 }
 
 int main() {
@@ -399,11 +409,11 @@ int main() {
                 gameMode();
             }
             else{
-                gameStart();
+                gameIntro();
             }
         }
         else if (gameState == 0){
-            gameStart();
+            gameIntro();
         }
         else if (gameState == 99){
             debugMode();
