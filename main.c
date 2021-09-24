@@ -207,46 +207,41 @@ void gameMode(){
     }
 
     for (int i = 0; i < 3; i++){
-        if (!hit){
-            clouds1[i].x_pos += clouds1[i].x_vel;
-            clouds2[i].x_pos += clouds2[i].x_vel;
-        }
+        clouds1[i].x_pos += clouds1[i].x_vel;
+        clouds2[i].x_pos += clouds2[i].x_vel;
         if (clouds1[i].x_pos < - 50 * factor){
             clouds1[i].x_pos = (400 + rand() % 150) *factor;
         }
         if (clouds2[i].x_pos < - 100 * factor){
             clouds2[i].x_pos = (450 + rand() % 350) *factor;
         }
-        if (!hit){
-            animate(&clouds1[i]);
-            animate(&clouds2[i]);
-        }
+        animate(&clouds1[i]);
+        animate(&clouds2[i]);
     }
 
     // fixed
     for (int i=0; i < 3; i++){
-        if (!hit){rocks[i].x_pos += rocks[i].x_vel;}
+        rocks[i].x_pos += rocks[i].x_vel;
         if (rocks[i].x_pos + 80 * factor <= 0){
             int x1 = (SCREEN_WIDTH + 50 + rand() % 100) * factor;
-            int y1 = (SCREEN_HEIGHT - 100 - rand() % 100) * factor;
+            int y1 = (SCREEN_HEIGHT - 140 - rand() % 100) * factor;
             rocks[i].y_pos = y1;
             rocks[i].x_pos = x1;
         }
         checkHit(&rocks[i]);
-        if (!hit){animate(&rocks[i]);}
+        animate(&rocks[i]);
     }    
     
     // fixed new origin of 0,0
     const int ground_width = ground[0].img_list[0].sprite.w;
     for (int i=0; i<6; i++){
-        if (!hit){ground[i].x_pos += ground[i].x_vel;}
+        ground[i].x_pos += ground[i].x_vel;
         if (ground[i].x_pos + ground_width * factor <= 0){
             ground[i].x_pos = (SCREEN_WIDTH)*factor;
         }
-        if (!hit){ animate(&ground[i]);}
+        animate(&ground[i]);
     }
-
-    if (!hit){ animate(&mainPlayer);}
+    animate(&mainPlayer);
 }
 
 void checkHit(AnimatedObject *animatedObj){
@@ -257,16 +252,16 @@ void checkHit(AnimatedObject *animatedObj){
     int target_x2 = target_x1 + animatedObj->img_list[0].sprite.w;
     int mPlayer_y1 = mainPlayer.y_pos / factor;
     int mPlayer_y2 = mPlayer_y1 + mainPlayer.img_list[0].sprite.h;
-    printf("mPlayer_y1, %i, target_y2, %i\n", mPlayer_y1, target_y2);
+    //printf("mPlayer_y1, %i, target_y2, %i\n", mPlayer_y1, target_y2);
     if (mPlayer_x2 < target_x1 || mPlayer_x1 > target_x2) {
-        hit == 0;    
+        hit = 0;    
     }
     else if (mPlayer_y1 > target_y2 || mPlayer_y2  < target_y1) {
-        hit == 0;
+        hit = 0;
     }
     else {
-        hit == 1;
-        printf("oopsy\n");
+        hit = 1;
+        printf("Hit: %i\n", hit);
     }
 }
 
@@ -278,9 +273,7 @@ void animate(AnimatedObject *animatedObj){
     }
     toDraw = moveImage(animatedObj->img_list[animatedObj->index], animatedObj->x_pos / factor, animatedObj->y_pos / factor);
     drawImage(toDraw);
-
 }
-
 
 void debugMode(){
     setBackgroundColor(createColor(15, 15, 15)); // why not?
@@ -318,7 +311,7 @@ void initRocks(){
         rocks[s].index = 0;
         rocks[s].anim_rate = 99;
         rocks[s].x_pos = (SCREEN_WIDTH * s + 50 + rand() % 100) * factor;
-        rocks[s].y_pos = (SCREEN_HEIGHT - 100 - rand() % 100) * factor;
+        rocks[s].y_pos = (SCREEN_HEIGHT - 140 - rand() % 100) * factor;
         rocksL[s][0] = scaleImage(createImage(img_gnd_1), 100,100);
         rocks[s].img_list = rocksL[s];
     }
