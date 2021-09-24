@@ -86,6 +86,8 @@ Image clouds1L[3][1];
 AnimatedObject clouds2[3];
 Image clouds2L[3][1];
 
+int hit = 0;
+
 void initialize();
 void startScreen();
 void gameIntro();
@@ -98,9 +100,13 @@ void animate(AnimatedObject *animatedObj);
 void initGround();
 void initSky();
 void initRocks();
+void checkHit(AnimatedObject *animatedObj);
+
+
 
 void initialize() {
 	initializeScreen();
+    initializeDebugFont();
     setBackgroundColor(createColor(0, 0, 0));
     audioInit();
     audioTransferVagToSPU(buzz1, buzz1_size, SPU_1CH);
@@ -127,6 +133,9 @@ void initialize() {
 #define SPRITEHEIGHT 18
 #define GROUND (SCREEN_HEIGHT-80 - SPRITEHEIGHT) * factor
 #define CEILING (SPRITEHEIGHT)
+const int mPlayer_x1 = 10 ;
+const int mPlayer_x2 = mPlayer_x1 + 22;
+
 int a, b, c = 0; // a is for bringing in Buzzy, b for bringing in Bee, c from bringing in Jam
 
 int gameState = 0; // 0 = start state, 1 = play state, 2 = pause
@@ -197,43 +206,68 @@ void gameMode(){
         mainPlayer.y_vel = 0;
     }
 
-   // magically still works
     for (int i = 0; i < 3; i++){
-        clouds1[i].x_pos += clouds1[i].x_vel;
-        clouds2[i].x_pos += clouds2[i].x_vel;
+        if (!hit){
+            clouds1[i].x_pos += clouds1[i].x_vel;
+            clouds2[i].x_pos += clouds2[i].x_vel;
+        }
         if (clouds1[i].x_pos < - 50 * factor){
             clouds1[i].x_pos = (400 + rand() % 150) *factor;
         }
         if (clouds2[i].x_pos < - 100 * factor){
             clouds2[i].x_pos = (450 + rand() % 350) *factor;
         }
-        animate(&clouds1[i]);
-        animate(&clouds2[i]);
+        if (!hit){
+            animate(&clouds1[i]);
+            animate(&clouds2[i]);
+        }
     }
 
     // fixed
     for (int i=0; i < 3; i++){
-        rocks[i].x_pos += rocks[i].x_vel;
+        if (!hit){rocks[i].x_pos += rocks[i].x_vel;}
         if (rocks[i].x_pos + 80 * factor <= 0){
             int x1 = (SCREEN_WIDTH + 50 + rand() % 100) * factor;
             int y1 = (SCREEN_HEIGHT - 100 - rand() % 100) * factor;
             rocks[i].y_pos = y1;
             rocks[i].x_pos = x1;
         }
-        animate(&rocks[i]);
+        checkHit(&rocks[i]);
+        if (!hit){animate(&rocks[i]);}
     }    
     
     // fixed new origin of 0,0
     const int ground_width = ground[0].img_list[0].sprite.w;
     for (int i=0; i<6; i++){
-        ground[i].x_pos += ground[i].x_vel;
+        if (!hit){ground[i].x_pos += ground[i].x_vel;}
         if (ground[i].x_pos + ground_width * factor <= 0){
             ground[i].x_pos = (SCREEN_WIDTH)*factor;
         }
-        animate(&ground[i]);
+        if (!hit){ animate(&ground[i]);}
     }
 
-    animate(&mainPlayer);
+    if (!hit){ animate(&mainPlayer);}
+}
+
+void checkHit(AnimatedObject *animatedObj){
+    int pad = 0;
+    int target_y1 = animatedObj->y_pos / factor; // target top left
+    int target_y2 = target_y1 + animatedObj->img_list[0].sprite.h; // target bottom left
+    int target_x1 = animatedObj->x_pos / factor;
+    int target_x2 = target_x1 + animatedObj->img_list[0].sprite.w;
+    int mPlayer_y1 = mainPlayer.y_pos / factor;
+    int mPlayer_y2 = mPlayer_y1 + mainPlayer.img_list[0].sprite.h;
+    printf("mPlayer_y1, %i, target_y2, %i\n", mPlayer_y1, target_y2);
+    if (mPlayer_x2 < target_x1 || mPlayer_x1 > target_x2) {
+        hit == 0;    
+    }
+    else if (mPlayer_y1 > target_y2 || mPlayer_y2  < target_y1) {
+        hit == 0;
+    }
+    else {
+        hit == 1;
+        printf("oopsy\n");
+    }
 }
 
 void animate(AnimatedObject *animatedObj){
@@ -244,6 +278,7 @@ void animate(AnimatedObject *animatedObj){
     }
     toDraw = moveImage(animatedObj->img_list[animatedObj->index], animatedObj->x_pos / factor, animatedObj->y_pos / factor);
     drawImage(toDraw);
+
 }
 
 
@@ -284,7 +319,7 @@ void initRocks(){
         rocks[s].anim_rate = 99;
         rocks[s].x_pos = (SCREEN_WIDTH * s + 50 + rand() % 100) * factor;
         rocks[s].y_pos = (SCREEN_HEIGHT - 100 - rand() % 100) * factor;
-        rocksL[s][0] = scaleImage(createImage(img_gnd_1), 50,50);
+        rocksL[s][0] = scaleImage(createImage(img_gnd_1), 100,100);
         rocks[s].img_list = rocksL[s];
     }
 }
@@ -397,7 +432,7 @@ void initIntro(){
 
 int main() {
   initialize();
-    printf("BuzzyBee v0.2 New Animation routine\n");
+    printf("BuzzyBee v0.3 \n");
     mainTimer = createTimer();
     int time1;
     while (1) {
@@ -409,7 +444,7 @@ int main() {
                 gameMode();
             }
             else{
-                gameIntro();
+                //gameIntro();
             }
         }
         else if (gameState == 0){
