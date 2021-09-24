@@ -86,6 +86,8 @@ Image clouds1L[3][1];
 AnimatedObject clouds2[3];
 Image clouds2L[3][1];
 
+int hit = 0;
+
 void initialize();
 void startScreen();
 void gameIntro();
@@ -98,9 +100,13 @@ void animate(AnimatedObject *animatedObj);
 void initGround();
 void initSky();
 void initRocks();
+void checkHit(AnimatedObject *animatedObj);
+
+
 
 void initialize() {
 	initializeScreen();
+    initializeDebugFont();
     setBackgroundColor(createColor(0, 0, 0));
     audioInit();
     audioTransferVagToSPU(buzz1, buzz1_size, SPU_1CH);
@@ -127,6 +133,9 @@ void initialize() {
 #define SPRITEHEIGHT 18
 #define GROUND (SCREEN_HEIGHT-80 - SPRITEHEIGHT) * factor
 #define CEILING (SPRITEHEIGHT)
+const int mPlayer_x1 = 10 ;
+const int mPlayer_x2 = mPlayer_x1 + 22;
+
 int a, b, c = 0; // a is for bringing in Buzzy, b for bringing in Bee, c from bringing in Jam
 
 int gameState = 0; // 0 = start state, 1 = play state, 2 = pause
@@ -197,7 +206,6 @@ void gameMode(){
         mainPlayer.y_vel = 0;
     }
 
-   // magically still works
     for (int i = 0; i < 3; i++){
         clouds1[i].x_pos += clouds1[i].x_vel;
         clouds2[i].x_pos += clouds2[i].x_vel;
@@ -211,15 +219,18 @@ void gameMode(){
         animate(&clouds2[i]);
     }
 
+    animate(&mainPlayer);
+
     // fixed
     for (int i=0; i < 3; i++){
         rocks[i].x_pos += rocks[i].x_vel;
         if (rocks[i].x_pos + 80 * factor <= 0){
             int x1 = (SCREEN_WIDTH + 50 + rand() % 100) * factor;
-            int y1 = (SCREEN_HEIGHT - 100 - rand() % 100) * factor;
+            int y1 = (SCREEN_HEIGHT - 140 - rand() % 100) * factor;
             rocks[i].y_pos = y1;
             rocks[i].x_pos = x1;
         }
+        checkHit(&rocks[i]);
         animate(&rocks[i]);
     }    
     
@@ -232,8 +243,30 @@ void gameMode(){
         }
         animate(&ground[i]);
     }
+}
 
-    animate(&mainPlayer);
+void checkHit(AnimatedObject *animatedObj){
+    int pad = 10;
+    int target_y1 = animatedObj->y_pos / factor; // target top left
+    int target_y2 = target_y1 + animatedObj->img_list[0].sprite.h; // target bottom left
+    int target_x1 = animatedObj->x_pos / factor;
+    int target_x2 = target_x1 + animatedObj->img_list[0].sprite.w;
+    int mPlayer_y1 = mainPlayer.y_pos / factor;
+    int mPlayer_y2 = mPlayer_y1 + mainPlayer.img_list[0].sprite.h;
+    //printf("mPlayer_y1, %i, target_y2, %i\n", mPlayer_y1, target_y2);
+    if (mPlayer_x2 < target_x1 + pad|| mPlayer_x1 > target_x2 - pad) {
+        hit = 0;    
+    }
+    else if (mPlayer_y1  > target_y2 - pad || mPlayer_y2 - pad < target_y1 + pad) {
+        hit = 0;
+    }
+    else {
+        hit = 1;
+        initPlayer();
+        initGround();
+        initSky();
+        initRocks();
+    }
 }
 
 void animate(AnimatedObject *animatedObj){
@@ -245,7 +278,6 @@ void animate(AnimatedObject *animatedObj){
     toDraw = moveImage(animatedObj->img_list[animatedObj->index], animatedObj->x_pos / factor, animatedObj->y_pos / factor);
     drawImage(toDraw);
 }
-
 
 void debugMode(){
     setBackgroundColor(createColor(15, 15, 15)); // why not?
@@ -283,8 +315,8 @@ void initRocks(){
         rocks[s].index = 0;
         rocks[s].anim_rate = 99;
         rocks[s].x_pos = (SCREEN_WIDTH * s + 50 + rand() % 100) * factor;
-        rocks[s].y_pos = (SCREEN_HEIGHT - 100 - rand() % 100) * factor;
-        rocksL[s][0] = scaleImage(createImage(img_gnd_1), 50,50);
+        rocks[s].y_pos = (SCREEN_HEIGHT - 140 - rand() % 100) * factor;
+        rocksL[s][0] = scaleImage(createImage(img_gnd_1), 100,100);
         rocks[s].img_list = rocksL[s];
     }
 }
@@ -397,7 +429,7 @@ void initIntro(){
 
 int main() {
   initialize();
-    printf("BuzzyBee v0.2 New Animation routine\n");
+    printf("BuzzyBee v0.3 \n");
     mainTimer = createTimer();
     int time1;
     while (1) {
@@ -420,9 +452,9 @@ int main() {
         }
 
         if (input_trig & PAD_START) {
-            if (gameState == 0){
-                audioPlay(SPU_0CH, 0x1000, 0x1000);
+            if (gameState == 0 & (time2 > 2)){
                 time1 = mainTimer.totalsec;
+                audioPlay(SPU_0CH, 0x1000, 0x1000);
                 pressStart.total_frames = 3;
                 pressStart.anim_rate = 5;
                 gameState = 1;
