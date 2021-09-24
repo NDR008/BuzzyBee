@@ -219,6 +219,8 @@ void gameMode(){
         animate(&clouds2[i]);
     }
 
+    animate(&mainPlayer);
+
     // fixed
     for (int i=0; i < 3; i++){
         rocks[i].x_pos += rocks[i].x_vel;
@@ -241,11 +243,10 @@ void gameMode(){
         }
         animate(&ground[i]);
     }
-    animate(&mainPlayer);
 }
 
 void checkHit(AnimatedObject *animatedObj){
-    int pad = 0;
+    int pad = 10;
     int target_y1 = animatedObj->y_pos / factor; // target top left
     int target_y2 = target_y1 + animatedObj->img_list[0].sprite.h; // target bottom left
     int target_x1 = animatedObj->x_pos / factor;
@@ -253,15 +254,18 @@ void checkHit(AnimatedObject *animatedObj){
     int mPlayer_y1 = mainPlayer.y_pos / factor;
     int mPlayer_y2 = mPlayer_y1 + mainPlayer.img_list[0].sprite.h;
     //printf("mPlayer_y1, %i, target_y2, %i\n", mPlayer_y1, target_y2);
-    if (mPlayer_x2 < target_x1 || mPlayer_x1 > target_x2) {
+    if (mPlayer_x2 < target_x1 + pad|| mPlayer_x1 > target_x2 - pad) {
         hit = 0;    
     }
-    else if (mPlayer_y1 > target_y2 || mPlayer_y2  < target_y1) {
+    else if (mPlayer_y1  > target_y2 - pad || mPlayer_y2 - pad < target_y1 + pad) {
         hit = 0;
     }
     else {
         hit = 1;
-        printf("Hit: %i\n", hit);
+        initPlayer();
+        initGround();
+        initSky();
+        initRocks();
     }
 }
 
@@ -437,7 +441,7 @@ int main() {
                 gameMode();
             }
             else{
-                //gameIntro();
+                gameIntro();
             }
         }
         else if (gameState == 0){
