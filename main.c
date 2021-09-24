@@ -452,9 +452,9 @@ int main() {
         }
 
         if (input_trig & PAD_START) {
-            if (gameState == 0){
-                audioPlay(SPU_0CH, 0x1000, 0x1000);
+            if (gameState == 0 & (time2 > 2)){
                 time1 = mainTimer.totalsec;
+                audioPlay(SPU_0CH, 0x1000, 0x1000);
                 pressStart.total_frames = 3;
                 pressStart.anim_rate = 5;
                 gameState = 1;
