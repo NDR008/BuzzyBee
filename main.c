@@ -48,7 +48,7 @@ SOFTWARE.
 // Global timer
 PSXTimer mainTimer;
 
-typedef struct{
+typedef struct AnimatedObject{
     int frame_n;            // this is the current frame
     int index;
     int total_frames;       // this is the total frame
@@ -60,8 +60,16 @@ typedef struct{
     Image *img_list;   // make this a list of Image (ok)
 } AnimatedObject;
 
+typedef struct Health {
+    int level;
+    Image *bar;
+    Image art;
+} Health;
+Image barL[5];
+
 AnimatedObject mainPlayer;
 Image mainPlayerL[4];
+Health mainHealth;
 
 # define enemiesN 1
 AnimatedObject enemies;
@@ -88,6 +96,9 @@ Image groundL[groundN][1];
 AnimatedObject rocks[rocksN];
 Image rocksL[rocksN][1];
 
+AnimatedObject flowers[rocksN];
+Image flowersL[rocksN][1];
+
 #define hillsN 5
 AnimatedObject hills[hillsN];
 Image hillsL[hillsN][1];
@@ -98,7 +109,8 @@ Image clouds1L[cloudsN][1];
 AnimatedObject clouds2[cloudsN];
 Image clouds2L[cloudsN][1];
 
-int hit = 0;
+int hitE = 0;
+int hitF = 0;
 
 void initialize();
 void startScreen();
@@ -112,11 +124,12 @@ void animate(AnimatedObject *animatedObj);
 void initGround();
 void initSky();
 void initRocks();
-void checkHit(AnimatedObject *animatedObj);
+int checkHit(AnimatedObject *animatedObj);
 void initEnemies();
 void initHills();
 
 void initialize() {
+    srand(1);
 	initializeScreen();
     initializeDebugFont();
     setBackgroundColor(createColor(0, 0, 0));
@@ -147,7 +160,7 @@ void initialize() {
 #define SPRITEHEIGHT 18
 #define GROUND (SCREEN_HEIGHT-80 - SPRITEHEIGHT) * factor
 #define CEILING (SPRITEHEIGHT) * factor
-const int mPlayer_x1 = 10 ;
+const int mPlayer_x1 = 15 ;
 const int mPlayer_x2 = mPlayer_x1 + 22;
 
 int a, b, c = 0; // a is for bringing in Buzzy, b for bringing in Bee, c from bringing in Jam
@@ -193,6 +206,14 @@ void gameIntro(){
 // need to fix
 void gameMode(){   
     setBackgroundColor(createColor(100, 100, 200));
+    //FntPrint("Health %d, HitF %d, HitE %d", mainHealth.level, hitF, hitE);
+
+    int drawHealth = (int) mainHealth.level / 1000;
+    for (int i=0; i<drawHealth; i++){
+        drawImage(mainHealth.bar[i]);
+    }
+    
+    mainHealth.level -= 3;
 
     // enemies on top
     enemies.x_pos += enemies.x_vel;
@@ -208,8 +229,11 @@ void gameMode(){
         enemies.y_vel = (-1 - rand()%3 ) * factor;
     }
     animate(&enemies);
-    checkHit(&enemies);
-
+    int oldHitE = hitE;
+    hitE = checkHit(&enemies);
+    if (hitE && !oldHitE) {
+        mainHealth.level -= 1500;
+    }
 
     // if we press X to jump...
     if (input_trig & PAD_CROSS) {
@@ -254,15 +278,28 @@ void gameMode(){
     animate(&mainPlayer);
 
     // fixed
-    for (int i=0; i < 3; i++){
+    for (int i=0; i < rocksN; i++){
+        int rock_wdith = rocks[0].img_list[0].sprite.w * factor / 2;
+        int flower_height = flowers[0].img_list[0].sprite.h * factor;
         rocks[i].x_pos += rocks[i].x_vel;
+        flowers[i].x_pos += rocks[i].x_vel;
         if (rocks[i].x_pos + 80 * factor <= 0){
-            int x1 = (SCREEN_WIDTH + 50 + rand() % 100) * factor;
-            int y1 = (SCREEN_HEIGHT - 140 - rand() % 100) * factor;
+            int x1 = (SCREEN_WIDTH + 100 + rand() % 50) * factor;
+            int y1 = (SCREEN_HEIGHT - 80 - rand() % 120) * factor;
             rocks[i].y_pos = y1;
             rocks[i].x_pos = x1;
+            flowers[i].x_pos = rocks[i].x_pos + rock_wdith;
+            flowers[i].y_pos = rocks[i].y_pos - flower_height;
         }
         animate(&rocks[i]);
+        animate(&flowers[i]);
+
+        int oldHitF = hitF;
+        hitF = checkHit(&flowers[i]);
+        if (hitF && !oldHitF) {
+            mainHealth.level += 1000;
+            flowers[i].x_pos = -50 * factor;
+        }
     }    
     
     const int ground_width = ground[0].img_list[0].sprite.w;
@@ -283,11 +320,14 @@ void gameMode(){
         animate(&hills[i]);
     }
 
+    if (mainHealth.level > 5999) {mainHealth.level = 5999;}
+    if (mainHealth.level < 0) {mainHealth.level = 0;}
 }
 
-void checkHit(AnimatedObject *animatedObj){
-    int previous_hit = hit;
-    int pad = 10;
+int checkHit(AnimatedObject *animatedObj){
+    // AABB detection
+    int new_hit = 0;
+    int pad = 1;
     int target_y1 = animatedObj->y_pos / factor; // target top left
     int target_y2 = target_y1 + animatedObj->img_list[0].sprite.h; // target bottom left
     int target_x1 = animatedObj->x_pos / factor;
@@ -295,16 +335,11 @@ void checkHit(AnimatedObject *animatedObj){
     int mPlayer_y1 = mainPlayer.y_pos / factor;
     int mPlayer_y2 = mPlayer_y1 + mainPlayer.img_list[0].sprite.h;
     //printf("mPlayer_y1, %i, target_y2, %i\n", mPlayer_y1, target_y2);
-    if (mPlayer_x2 < target_x1 + pad|| mPlayer_x1 > target_x2 - pad) {
-        hit = 0;    
-    }
-    else if (mPlayer_y1  > target_y2 - pad || mPlayer_y2 - pad < target_y1 + pad) {
-        hit = 0;
-    }
-    else {
-        FntPrint("Hit!\n");
-        hit = 1;
-    }
+
+    return mPlayer_x2 >= target_x1 + pad
+        && mPlayer_x1 <= target_x2 - pad
+        && mPlayer_y2 >= target_y1 + pad
+        && mPlayer_y1 <= target_y2 - pad;
 }
 
 void animate(AnimatedObject *animatedObj){
@@ -330,11 +365,17 @@ void debugMode(){
 
 // fixed
 void initPlayer(){
+    mainHealth.level = 5999;
+    for (int i=0; i<5; i++){
+        barL[i] = moveImage(scaleImage(createImage(img_health),400,40),20+i*20, 15);
+    }
+    mainHealth.bar = barL;
+
     mainPlayer.total_frames = 4;
     mainPlayer.frame_n = 0;
     mainPlayer.index = 0;
     mainPlayer.y_pos = GROUND + 30 * factor;
-    mainPlayer.x_pos = 10 * factor;
+    mainPlayer.x_pos = mPlayer_x1 * factor;
     mainPlayer.y_vel = 0;
     mainPlayer.x_vel = 0;
     mainPlayer.anim_rate = 4;
@@ -364,16 +405,25 @@ void initEnemies(){
 
 // fixed
 void initRocks(){
-    for (int s=0; s<3; s++){
+    for (int s=0; s< rocksN; s++){
         rocks[s].total_frames = 1;
         rocks[s].frame_n = 0;
         rocks[s].x_vel = -1 * factor;
         rocks[s].index = 0;
         rocks[s].anim_rate = 99;
         rocks[s].x_pos = (SCREEN_WIDTH * s + 50 + rand() % 100) * factor;
-        rocks[s].y_pos = (SCREEN_HEIGHT - 140 - rand() % 100) * factor;
-        rocksL[s][0] = scaleImage(createImage(img_gnd_1), 100,100);
-        rocks[s].img_list = rocksL[s];
+        rocks[s].y_pos = (SCREEN_HEIGHT - 120 - rand() % 100) * factor;
+        rocksL[s][0] = createImage(img_gnd_1);
+        rocks[s].img_list = rocksL[s];        
+
+        flowers[s].total_frames = rocks[s].total_frames;
+        flowers[s].frame_n = rocks[s].frame_n;
+        flowers[s].x_vel = rocks[s].x_vel;
+        flowers[s].anim_rate = 99;
+        flowersL[s][0] = createImage(img_flower3);
+        flowers[s].img_list = flowersL[s];       
+        flowers[s].x_pos = rocks[s].x_pos + rocks[0].img_list[0].sprite.w * factor / 2;
+        flowers[s].y_pos = rocks[s].y_pos - flowers[0].img_list[0].sprite.h * factor;
     }
 }
 
@@ -416,10 +466,9 @@ void initGround(){
 }
 
 void initSky(){
-    srand(1);
     for (int s=0; s<cloudsN; s++){
         int x1 = rand() % (500) * factor;
-        int y1 = (20+ rand() % 24) * factor;
+        int y1 = (50+ rand() % 24) * factor;
         int s1 = (1 + rand() % 2) * factor;
 
         int x2 = rand() % (500) * factor;
@@ -506,8 +555,8 @@ void initIntro(){
 }
 
 int main() {
-  initialize();
-    printf("BuzzyBee v0.3 \n");
+    initialize();
+    printf("BuzzyBee v0.8 \n");
     mainTimer = createTimer();
     int time1;
     while (1) {

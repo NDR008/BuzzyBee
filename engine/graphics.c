@@ -21,8 +21,8 @@
 
 #define OT_LENGTH 1
 #define PACKETMAX 3000
-#define __ramsize   0x00200000
-#define __stacksize 0x00004000
+//#define __ramsize   0x00300000
+//#define __stacksize 0x00004000
 
 #define DEBUGMODE 1
 #define DEBUG 0
