@@ -230,10 +230,9 @@ void gameMode(){
     }
     animate(&enemies);
     hitE = checkHit(&enemies, hitE);
-    
+
     if (hitE) {
         mainHealth.level -= 500;
-        enemies.x_pos = -50*factor;
     }
 
 
