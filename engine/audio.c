@@ -4,21 +4,25 @@
 
 #include "audio.h"
 
-SpuCommonAttr l_c_attr;
-SpuVoiceAttr  g_s_attr;
-unsigned long l_vag1_spu_addr;
-
 void audioInit() {
 	//SpuInitMalloc (SOUND_MALLOC_MAX, SPU_MALLOC_RECSIZ * (SOUND_MALLOC_MAX + 1));
+    DsInit();
     SpuInit();
     static char spuMallocArea[SPU_MALLOC_RECSIZ * (SOUND_MALLOC_MAX + 1)];
     SpuInitMalloc (SOUND_MALLOC_MAX, spuMallocArea);
-    l_c_attr.mask = (SPU_COMMON_MVOLL | SPU_COMMON_MVOLR);
-    l_c_attr.mvol.left  = 0x3fff; // set master left volume
-    l_c_attr.mvol.right = 0x3fff; // set master right volume
+    l_c_attr.mask = (SPU_COMMON_MVOLL | SPU_COMMON_MVOLR | SPU_COMMON_CDVOLL | SPU_COMMON_CDVOLR | SPU_COMMON_CDMIX);
+    // Master volume should be in range 0x0000 - 0x3fff
+    l_c_attr.mvol.left  = 0x3fff;
+    l_c_attr.mvol.right = 0x3fff;
+    // Cd volume should be in range 0x0000 - 0x7fff
+    l_c_attr.cd.volume.left = 0x7fff;
+    l_c_attr.cd.volume.right = 0x7fff;
+    // Enable CD input ON
+    l_c_attr.cd.mix = SPU_ON;
+
     SpuSetCommonAttr (&l_c_attr);
-    SpuSetIRQ(SPU_OFF);
-    SpuSetKey(SpuOff, SPU_ALLCH);
+    //SpuSetIRQ(SPU_OFF);
+    //SpuSetKey(SpuOff, SPU_ALLCH);
 }
 
 void audioTransferVagToSPU(char* sound, int sound_size, int voice_channel) {
