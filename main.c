@@ -124,9 +124,20 @@ void animate(AnimatedObject *animatedObj);
 void initGround();
 void initSky();
 void initRocks();
-int checkHit(AnimatedObject *animatedObj, int hit);
+int checkHit(AnimatedObject *animatedObj);
 void initEnemies();
 void initHills();
+
+// scaling the graphics (example video width is 320px but "game world" is 320 x factor)
+#define factor 1024     
+#define GRAVITY factor / 4
+#define MAXFLAP 6 * factor
+#define MAXSPEED factor
+#define SPRITEHEIGHT 18
+#define GROUND (SCREEN_HEIGHT-80 - SPRITEHEIGHT) * factor
+#define CEILING (SPRITEHEIGHT) * factor
+const int mPlayer_x1 = 15 * factor;
+const int mPlayer_x2 = mPlayer_x1 + 22;
 
 void initialize() {
     srand(1);
@@ -152,16 +163,6 @@ void initialize() {
     //load sprites
 }
 
-// scaling the graphics (example video width is 320px but "game world" is 320 x factor)
-#define factor 1024     
-#define GRAVITY factor / 4
-#define MAXSPEED factor
-#define MAXFLAP 6 * factor
-#define SPRITEHEIGHT 18
-#define GROUND (SCREEN_HEIGHT-80 - SPRITEHEIGHT) * factor
-#define CEILING (SPRITEHEIGHT) * factor
-const int mPlayer_x1 = 10 ;
-const int mPlayer_x2 = mPlayer_x1 + 22;
 
 int a, b, c = 0; // a is for bringing in Buzzy, b for bringing in Bee, c from bringing in Jam
 
@@ -206,14 +207,14 @@ void gameIntro(){
 // need to fix
 void gameMode(){   
     setBackgroundColor(createColor(100, 100, 200));
-    FntPrint("Health %d, HitF %d, HitE %d", mainHealth.level, hitF, hitE);
+    //FntPrint("Health %d, HitF %d, HitE %d", mainHealth.level, hitF, hitE);
 
     int drawHealth = (int) mainHealth.level / 1000;
     for (int i=0; i<drawHealth; i++){
         drawImage(mainHealth.bar[i]);
     }
     
-    //mainHealth.level -= 50;
+    mainHealth.level -= 3;
 
     // enemies on top
     enemies.x_pos += enemies.x_vel;
@@ -229,12 +230,11 @@ void gameMode(){
         enemies.y_vel = (-1 - rand()%3 ) * factor;
     }
     animate(&enemies);
-    hitE = checkHit(&enemies, hitE);
-
-    if (hitE) {
-        mainHealth.level -= 500;
+    int oldHitE = hitE;
+    hitE = checkHit(&enemies);
+    if (hitE && !oldHitE) {
+        mainHealth.level -= 1500;
     }
-
 
     // if we press X to jump...
     if (input_trig & PAD_CROSS) {
@@ -279,14 +279,14 @@ void gameMode(){
     animate(&mainPlayer);
 
     // fixed
-    for (int i=0; i < 3; i++){
+    for (int i=0; i < rocksN; i++){
         int rock_wdith = rocks[0].img_list[0].sprite.w * factor / 2;
         int flower_height = flowers[0].img_list[0].sprite.h * factor;
         rocks[i].x_pos += rocks[i].x_vel;
-        flowers[i].x_pos = rocks[i].x_pos + rock_wdith;
+        flowers[i].x_pos += rocks[i].x_vel;
         if (rocks[i].x_pos + 80 * factor <= 0){
             int x1 = (SCREEN_WIDTH + 100 + rand() % 50) * factor;
-            int y1 = (SCREEN_HEIGHT - 120 - rand() % 100) * factor;
+            int y1 = (SCREEN_HEIGHT - 80 - rand() % 120) * factor;
             rocks[i].y_pos = y1;
             rocks[i].x_pos = x1;
             flowers[i].x_pos = rocks[i].x_pos + rock_wdith;
@@ -295,10 +295,11 @@ void gameMode(){
         animate(&rocks[i]);
         animate(&flowers[i]);
 
-        hitF = checkHit(&flowers[i], hitF);
-        if (hitF) {
-            mainHealth.level += 500;
-            flowers[i].x_pos = -15*factor;
+        int oldHitF = hitF;
+        hitF = checkHit(&flowers[i]);
+        if (hitF && !oldHitF) {
+            mainHealth.level += 1000;
+            flowers[i].x_pos = -50 * factor;
         }
     }    
     
@@ -324,7 +325,7 @@ void gameMode(){
     if (mainHealth.level < 0) {mainHealth.level = 0;}
 }
 
-int checkHit(AnimatedObject *animatedObj, int hit){
+int checkHit(AnimatedObject *animatedObj){
     // AABB detection
     int new_hit = 0;
     int pad = 1;
@@ -336,23 +337,10 @@ int checkHit(AnimatedObject *animatedObj, int hit){
     int mPlayer_y2 = mPlayer_y1 + mainPlayer.img_list[0].sprite.h;
     //printf("mPlayer_y1, %i, target_y2, %i\n", mPlayer_y1, target_y2);
 
-    // not hit
-    if (mPlayer_x2 < target_x1 + pad|| mPlayer_x1 > target_x2 - pad) {
-        new_hit = 0;    
-    }
-    else if (mPlayer_y1  > target_y2 - pad || mPlayer_y2 - pad < target_y1 + pad) {
-        new_hit = 0;
-    }
-    // hit
-    else {
-        new_hit = 1;
-    }
-    if (new_hit-hit == 0){
-            return 0;
-        }
-    else {
-        return 1;
-    }
+    return mPlayer_x2 >= target_x1 + pad
+        && mPlayer_x1 <= target_x2 - pad
+        && mPlayer_y2 >= target_y1 + pad
+        && mPlayer_y1 <= target_y2 - pad;
 }
 
 void animate(AnimatedObject *animatedObj){
@@ -388,7 +376,7 @@ void initPlayer(){
     mainPlayer.frame_n = 0;
     mainPlayer.index = 0;
     mainPlayer.y_pos = GROUND + 30 * factor;
-    mainPlayer.x_pos = 10 * factor;
+    mainPlayer.x_pos = mPlayer_x1;
     mainPlayer.y_vel = 0;
     mainPlayer.x_vel = 0;
     mainPlayer.anim_rate = 4;
@@ -418,7 +406,7 @@ void initEnemies(){
 
 // fixed
 void initRocks(){
-    for (int s=0; s<3; s++){
+    for (int s=0; s< rocksN; s++){
         rocks[s].total_frames = 1;
         rocks[s].frame_n = 0;
         rocks[s].x_vel = -1 * factor;
