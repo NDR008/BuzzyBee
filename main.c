@@ -50,7 +50,7 @@ SOFTWARE.
 // Global timer
 PSXTimer mainTimer;
 
-int tracks[] = {1, 0}; 
+int tracks[] = {2, 0}; 
 
 typedef struct AnimatedObject{
     int frame_n;            // this is the current frame
