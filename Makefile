@@ -19,6 +19,7 @@ LDFLAGS += -lc2
 LDFLAGS += -lcard
 LDFLAGS += -lcomb
 LDFLAGS += -lds
+LDFLAGS += -lcd
 LDFLAGS += -letc
 LDFLAGS += -lgpu
 LDFLAGS += -lgs

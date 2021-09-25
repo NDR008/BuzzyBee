@@ -13,6 +13,7 @@
         "images.h": "c",
         "basics.h": "c",
         "audio.h": "c",
-        "graphics.h": "c"
+        "graphics.h": "c",
+        "timerz.h": "c"
     }
 }

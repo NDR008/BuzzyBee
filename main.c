@@ -50,6 +50,8 @@ SOFTWARE.
 // Global timer
 PSXTimer mainTimer;
 
+int tracks[] = {1, 0}; 
+
 typedef struct AnimatedObject{
     int frame_n;            // this is the current frame
     int index;
@@ -157,6 +159,7 @@ void initialize() {
     initRocks();
     initHills();
 
+    DsPlay(2, tracks, 0);
     //load sprites
 }
 
