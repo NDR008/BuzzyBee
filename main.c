@@ -63,6 +63,10 @@ typedef struct{
 AnimatedObject mainPlayer;
 Image mainPlayerL[4];
 
+# define enemiesN 1
+AnimatedObject enemies;
+Image enemiesL[4];
+
 AnimatedObject pressStart;
 Image pressStartL[3];
 
@@ -75,16 +79,24 @@ Image BuzzyL[1];
 AnimatedObject jam;
 Image jamL[3];
 
-AnimatedObject ground[6];
-Image groundL[6][1];
+//const int groundN = 10;
+#define groundN 11
+AnimatedObject ground[groundN];
+Image groundL[groundN][1];
 
-AnimatedObject rocks[3];
-Image rocksL[6][1];
+#define rocksN 3
+AnimatedObject rocks[rocksN];
+Image rocksL[rocksN][1];
 
-AnimatedObject clouds1[3];
-Image clouds1L[3][1];
-AnimatedObject clouds2[3];
-Image clouds2L[3][1];
+#define hillsN 5
+AnimatedObject hills[hillsN];
+Image hillsL[hillsN][1];
+
+# define cloudsN 2
+AnimatedObject clouds1[cloudsN];
+Image clouds1L[cloudsN][1];
+AnimatedObject clouds2[cloudsN];
+Image clouds2L[cloudsN][1];
 
 int hit = 0;
 
@@ -101,8 +113,8 @@ void initGround();
 void initSky();
 void initRocks();
 void checkHit(AnimatedObject *animatedObj);
-
-
+void initEnemies();
+void initHills();
 
 void initialize() {
 	initializeScreen();
@@ -118,9 +130,11 @@ void initialize() {
     initIntro();
 
     initPlayer();
+    initEnemies();
     initGround();
     initSky();
     initRocks();
+    initHills();
 
     //load sprites
 }
@@ -132,7 +146,7 @@ void initialize() {
 #define MAXFLAP 6 * factor
 #define SPRITEHEIGHT 18
 #define GROUND (SCREEN_HEIGHT-80 - SPRITEHEIGHT) * factor
-#define CEILING (SPRITEHEIGHT)
+#define CEILING (SPRITEHEIGHT) * factor
 const int mPlayer_x1 = 10 ;
 const int mPlayer_x2 = mPlayer_x1 + 22;
 
@@ -179,6 +193,24 @@ void gameIntro(){
 // need to fix
 void gameMode(){   
     setBackgroundColor(createColor(100, 100, 200));
+
+    // enemies on top
+    enemies.x_pos += enemies.x_vel;
+    if (enemies.x_pos < (-20 * factor)){
+        enemies.x_pos = (SCREEN_WIDTH + 50) * factor;
+        enemies.y_pos = 5;
+    }
+    enemies.y_pos += enemies.y_vel;
+    if (enemies.y_pos < (2 * factor)){
+        enemies.y_vel = (1 + rand()%3) * factor;
+    }
+    else if (enemies.y_pos > GROUND){
+        enemies.y_vel = (-1 - rand()%3 ) * factor;
+    }
+    animate(&enemies);
+    checkHit(&enemies);
+
+
     // if we press X to jump...
     if (input_trig & PAD_CROSS) {
         audioPlay(SPU_1CH, 0x0500, 0x1000);
@@ -197,8 +229,8 @@ void gameMode(){
     mainPlayer.y_pos += mainPlayer.y_vel;
 
     // hover on the ground limit
-    if (mainPlayer.y_pos > GROUND){
-        mainPlayer.y_pos = GROUND;        
+    if (mainPlayer.y_pos > GROUND + 30 * factor){
+        mainPlayer.y_pos = GROUND + 30 * factor;        
     }
     // stay within frame
     else if (mainPlayer.y_pos < CEILING){
@@ -206,7 +238,7 @@ void gameMode(){
         mainPlayer.y_vel = 0;
     }
 
-    for (int i = 0; i < 3; i++){
+    for (int i = 0; i < cloudsN; i++){
         clouds1[i].x_pos += clouds1[i].x_vel;
         clouds2[i].x_pos += clouds2[i].x_vel;
         if (clouds1[i].x_pos < - 50 * factor){
@@ -215,8 +247,8 @@ void gameMode(){
         if (clouds2[i].x_pos < - 100 * factor){
             clouds2[i].x_pos = (450 + rand() % 350) *factor;
         }
-        animate(&clouds1[i]);
         animate(&clouds2[i]);
+        animate(&clouds1[i]);
     }
 
     animate(&mainPlayer);
@@ -230,22 +262,31 @@ void gameMode(){
             rocks[i].y_pos = y1;
             rocks[i].x_pos = x1;
         }
-        checkHit(&rocks[i]);
         animate(&rocks[i]);
     }    
     
-    // fixed new origin of 0,0
     const int ground_width = ground[0].img_list[0].sprite.w;
-    for (int i=0; i<6; i++){
+    for (int i=0; i<groundN; i++){
         ground[i].x_pos += ground[i].x_vel;
         if (ground[i].x_pos + ground_width * factor <= 0){
             ground[i].x_pos = (SCREEN_WIDTH)*factor;
         }
         animate(&ground[i]);
     }
+
+    const int hills_width = hills[0].img_list[0].sprite.w;
+    for (int i=0; i<hillsN; i++){
+        hills[i].x_pos += hills[i].x_vel;
+        if (hills[i].x_pos + hills_width * factor <= 0){
+            hills[i].x_pos = (SCREEN_WIDTH)*factor;
+        }
+        animate(&hills[i]);
+    }
+
 }
 
 void checkHit(AnimatedObject *animatedObj){
+    int previous_hit = hit;
     int pad = 10;
     int target_y1 = animatedObj->y_pos / factor; // target top left
     int target_y2 = target_y1 + animatedObj->img_list[0].sprite.h; // target bottom left
@@ -261,11 +302,8 @@ void checkHit(AnimatedObject *animatedObj){
         hit = 0;
     }
     else {
+        FntPrint("Hit!\n");
         hit = 1;
-        initPlayer();
-        initGround();
-        initSky();
-        initRocks();
     }
 }
 
@@ -295,9 +333,10 @@ void initPlayer(){
     mainPlayer.total_frames = 4;
     mainPlayer.frame_n = 0;
     mainPlayer.index = 0;
-    mainPlayer.y_pos = GROUND;
+    mainPlayer.y_pos = GROUND + 30 * factor;
     mainPlayer.x_pos = 10 * factor;
-    mainPlayer.y_vel, mainPlayer.x_vel = 0;
+    mainPlayer.y_vel = 0;
+    mainPlayer.x_vel = 0;
     mainPlayer.anim_rate = 4;
     mainPlayerL[0] = createImage(img_bee_0);
     mainPlayerL[1] = createImage(img_bee_1);
@@ -305,6 +344,23 @@ void initPlayer(){
     mainPlayerL[3] = mainPlayerL[1];
     mainPlayer.img_list = mainPlayerL;
 }
+
+void initEnemies(){
+    enemies.total_frames = 4;
+    enemies.frame_n = 0;
+    enemies.index = 0;
+    enemies.y_pos = 30;
+    enemies.x_pos = (SCREEN_WIDTH + 10) * factor;
+    enemies.y_vel = 2 * factor;
+    enemies.x_vel = -3 * factor / 2;
+    enemies.anim_rate = 4;
+    enemiesL[0] = createImage(img_wasp1);
+    enemiesL[1] = createImage(img_wasp2);
+    enemiesL[2] = createImage(img_wasp3);
+    enemiesL[3] = enemiesL[1];
+    enemies.img_list = enemiesL;
+}
+
 
 // fixed
 void initRocks(){
@@ -321,9 +377,31 @@ void initRocks(){
     }
 }
 
+void initHills(){
+    for (int ind=0; ind<hillsN; ind++){
+        hills[ind].total_frames = 1;
+        hills[ind].frame_n = 0;
+        hills[ind].index = 0;
+        hills[ind].y_vel = 0;
+        hills[ind].x_vel = -1 * factor / 4;
+        hills[ind].anim_rate = 99;
+        //int select_img = rand() % 5;
+        int select_img = 4;
+        if (select_img == 4){
+            hillsL[ind][0] = createImage(img_background1layer2);
+        }
+        else {
+            hillsL[ind][0] = createImage(img_background1layer1);
+        }
+        hills[ind].img_list = hillsL[ind];
+        hills[ind].y_pos = (SCREEN_HEIGHT - hills[0].img_list[0].sprite.h + 10) * factor;
+        hills[ind].x_pos = (ind*hills[0].img_list[0].sprite.w) * factor;
+    }
+}
+
 //fixed
 void initGround(){
-    for (int ind=0; ind<6; ind++){
+    for (int ind=0; ind<groundN; ind++){
         ground[ind].total_frames = 1;
         ground[ind].frame_n = 0;
         ground[ind].index = 0;
@@ -339,7 +417,7 @@ void initGround(){
 
 void initSky(){
     srand(1);
-    for (int s=0; s<3; s++){
+    for (int s=0; s<cloudsN; s++){
         int x1 = rand() % (500) * factor;
         int y1 = (20+ rand() % 24) * factor;
         int s1 = (1 + rand() % 2) * factor;
@@ -367,8 +445,8 @@ void initSky(){
         clouds1[s].anim_rate = 99;
         clouds2[s].anim_rate = 99;
 
-        clouds1L[s][0] = createImage(img_cloud_B);
-        clouds2L[s][0] = createImage(img_cloud_E);
+        clouds1L[s][0] = scaleImage(createImage(img_cloud), 50, 50);
+        clouds2L[s][0] = createImage(img_cloud);
 
         clouds1[s].img_list = clouds1L[s];
         clouds2[s].img_list = clouds2L[s];
@@ -452,7 +530,7 @@ int main() {
         }
 
         if (input_trig & PAD_START) {
-            if (gameState == 0 & (time2 > 2)){
+            if (gameState == 0 & (time2 >= 2)){
                 time1 = mainTimer.totalsec;
                 audioPlay(SPU_0CH, 0x1000, 0x1000);
                 pressStart.total_frames = 3;
