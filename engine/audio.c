@@ -23,6 +23,7 @@ void audioInit() {
     SpuSetCommonAttr (&l_c_attr);
     //SpuSetIRQ(SPU_OFF);
     //SpuSetKey(SpuOff, SPU_ALLCH);
+    SpuSetTransferMode(SPU_TRANSFER_BY_DMA);
 }
 
 void audioTransferVagToSPU(char* sound, int sound_size, int voice_channel) {
