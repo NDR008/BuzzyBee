@@ -128,17 +128,6 @@ int checkHit(AnimatedObject *animatedObj);
 void initEnemies();
 void initHills();
 
-// scaling the graphics (example video width is 320px but "game world" is 320 x factor)
-#define factor 1024     
-#define GRAVITY factor / 4
-#define MAXFLAP 6 * factor
-#define MAXSPEED factor
-#define SPRITEHEIGHT 18
-#define GROUND (SCREEN_HEIGHT-80 - SPRITEHEIGHT) * factor
-#define CEILING (SPRITEHEIGHT) * factor
-const int mPlayer_x1 = 15 * factor;
-const int mPlayer_x2 = mPlayer_x1 + 22;
-
 void initialize() {
     srand(1);
 	initializeScreen();
@@ -163,6 +152,16 @@ void initialize() {
     //load sprites
 }
 
+// scaling the graphics (example video width is 320px but "game world" is 320 x factor)
+#define factor 1024     
+#define GRAVITY factor / 4
+#define MAXSPEED factor
+#define MAXFLAP 6 * factor
+#define SPRITEHEIGHT 18
+#define GROUND (SCREEN_HEIGHT-80 - SPRITEHEIGHT) * factor
+#define CEILING (SPRITEHEIGHT) * factor
+const int mPlayer_x1 = 15 ;
+const int mPlayer_x2 = mPlayer_x1 + 22;
 
 int a, b, c = 0; // a is for bringing in Buzzy, b for bringing in Bee, c from bringing in Jam
 
@@ -376,7 +375,7 @@ void initPlayer(){
     mainPlayer.frame_n = 0;
     mainPlayer.index = 0;
     mainPlayer.y_pos = GROUND + 30 * factor;
-    mainPlayer.x_pos = mPlayer_x1;
+    mainPlayer.x_pos = mPlayer_x1 * factor;
     mainPlayer.y_vel = 0;
     mainPlayer.x_vel = 0;
     mainPlayer.anim_rate = 4;

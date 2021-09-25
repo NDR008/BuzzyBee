@@ -426,106 +426,107 @@ END GROUP
  *(.text.hot .text.hot.*)
  *(.text .stub .text.* .gnu.linkonce.t.*)
  .text.checkHit
-                0x00000000800101f8       0x94 main.o
+                0x00000000800101f8       0x90 main.o
                 0x00000000800101f8                checkHit
- .text.animate  0x000000008001028c      0x130 main.o
-                0x000000008001028c                animate
+ .text.animate  0x0000000080010288      0x130 main.o
+                0x0000000080010288                animate
  .text.gameIntro
-                0x00000000800103bc      0x15c main.o
-                0x00000000800103bc                gameIntro
+                0x00000000800103b8      0x15c main.o
+                0x00000000800103b8                gameIntro
  .text.gameMode
-                0x0000000080010518      0x5e0 main.o
-                0x0000000080010518                gameMode
+                0x0000000080010514      0x5e0 main.o
+                0x0000000080010514                gameMode
  .text.debugMode
-                0x0000000080010af8      0x20c main.o
-                0x0000000080010af8                debugMode
+                0x0000000080010af4      0x20c main.o
+                0x0000000080010af4                debugMode
  .text.initPlayer
-                0x0000000080010d04      0x20c main.o
-                0x0000000080010d04                initPlayer
+                0x0000000080010d00      0x20c main.o
+                0x0000000080010d00                initPlayer
  .text.initEnemies
-                0x0000000080010f10       0xf4 main.o
-                0x0000000080010f10                initEnemies
+                0x0000000080010f0c       0xf4 main.o
+                0x0000000080010f0c                initEnemies
  .text.initRocks
-                0x0000000080011004      0x214 main.o
-                0x0000000080011004                initRocks
+                0x0000000080011000      0x214 main.o
+                0x0000000080011000                initRocks
  .text.initHills
-                0x0000000080011218      0x120 main.o
-                0x0000000080011218                initHills
+                0x0000000080011214      0x120 main.o
+                0x0000000080011214                initHills
  .text.initGround
-                0x0000000080011338      0x11c main.o
-                0x0000000080011338                initGround
- .text.initSky  0x0000000080011454      0x29c main.o
-                0x0000000080011454                initSky
+                0x0000000080011334      0x11c main.o
+                0x0000000080011334                initGround
+ .text.initSky  0x0000000080011450      0x29c main.o
+                0x0000000080011450                initSky
  .text.initIntro
-                0x00000000800116f0      0x2a0 main.o
-                0x00000000800116f0                initIntro
+                0x00000000800116ec      0x2a0 main.o
+                0x00000000800116ec                initIntro
  .text.initialize
-                0x0000000080011990       0xd4 main.o
-                0x0000000080011990                initialize
+                0x000000008001198c       0xd4 main.o
+                0x000000008001198c                initialize
  .text.setScreenMode.part.0
-                0x0000000080011a64       0x64 engine/graphics.o
+                0x0000000080011a60       0x64 engine/graphics.o
  .text.createImage
-                0x0000000080011ac8       0xf8 engine/graphics.o
-                0x0000000080011ac8                createImage
+                0x0000000080011ac4       0xf8 engine/graphics.o
+                0x0000000080011ac4                createImage
  .text.moveImage
-                0x0000000080011bc0       0x44 engine/graphics.o
-                0x0000000080011bc0                moveImage
+                0x0000000080011bbc       0x44 engine/graphics.o
+                0x0000000080011bbc                moveImage
  .text.scaleImage
-                0x0000000080011c04       0x74 engine/graphics.o
-                0x0000000080011c04                scaleImage
+                0x0000000080011c00       0x74 engine/graphics.o
+                0x0000000080011c00                scaleImage
  .text.drawImage
-                0x0000000080011c78       0x60 engine/graphics.o
-                0x0000000080011c78                drawImage
+                0x0000000080011c74       0x60 engine/graphics.o
+                0x0000000080011c74                drawImage
  .text.createColor
-                0x0000000080011cd8       0x14 engine/graphics.o
-                0x0000000080011cd8                createColor
+                0x0000000080011cd4       0x14 engine/graphics.o
+                0x0000000080011cd4                createColor
  .text.setScreenMode
-                0x0000000080011cec       0x70 engine/graphics.o
-                0x0000000080011cec                setScreenMode
+                0x0000000080011ce8       0x70 engine/graphics.o
+                0x0000000080011ce8                setScreenMode
  .text.setBackgroundColor
-                0x0000000080011d5c       0x24 engine/graphics.o
-                0x0000000080011d5c                setBackgroundColor
+                0x0000000080011d58       0x24 engine/graphics.o
+                0x0000000080011d58                setBackgroundColor
  .text.initializeDebugFont
-                0x0000000080011d80       0x44 engine/graphics.o
-                0x0000000080011d80                initializeDebugFont
+                0x0000000080011d7c       0x44 engine/graphics.o
+                0x0000000080011d7c                initializeDebugFont
  .text.initializeOrderingTable
-                0x0000000080011dc4       0x90 engine/graphics.o
-                0x0000000080011dc4                initializeOrderingTable
+                0x0000000080011dc0       0x90 engine/graphics.o
+                0x0000000080011dc0                initializeOrderingTable
  .text.flushDisplay
-                0x0000000080011e54       0x90 engine/graphics.o
-                0x0000000080011e54                flushDisplay
+                0x0000000080011e50       0x90 engine/graphics.o
+                0x0000000080011e50                flushDisplay
  .text.clearDisplay
-                0x0000000080011ee4       0x74 engine/graphics.o
-                0x0000000080011ee4                clearDisplay
+                0x0000000080011ee0       0x74 engine/graphics.o
+                0x0000000080011ee0                clearDisplay
  .text.clearVRAM
-                0x0000000080011f58       0x44 engine/graphics.o
-                0x0000000080011f58                clearVRAM
+                0x0000000080011f54       0x44 engine/graphics.o
+                0x0000000080011f54                clearVRAM
  .text.initializeScreen
-                0x0000000080011f9c       0xa8 engine/graphics.o
-                0x0000000080011f9c                initializeScreen
- .text.in_init  0x0000000080012044       0x68 engine/input.o
-                0x0000000080012044                in_init
+                0x0000000080011f98       0xa8 engine/graphics.o
+                0x0000000080011f98                initializeScreen
+ .text.in_init  0x0000000080012040       0x68 engine/input.o
+                0x0000000080012040                in_init
  .text.in_update
-                0x00000000800120ac       0x50 engine/input.o
-                0x00000000800120ac                in_update
+                0x00000000800120a8       0x50 engine/input.o
+                0x00000000800120a8                in_update
  .text.createTimer
-                0x00000000800120fc       0x48 engine/timerz.o
-                0x00000000800120fc                createTimer
+                0x00000000800120f8       0x48 engine/timerz.o
+                0x00000000800120f8                createTimer
  .text.incTimer
-                0x0000000080012144       0x6c engine/timerz.o
-                0x0000000080012144                incTimer
+                0x0000000080012140       0x6c engine/timerz.o
+                0x0000000080012140                incTimer
  .text.audioInit
-                0x00000000800121b0       0x60 engine/audio.o
-                0x00000000800121b0                audioInit
+                0x00000000800121ac       0x60 engine/audio.o
+                0x00000000800121ac                audioInit
  .text.audioTransferVagToSPU
-                0x0000000080012210       0xc0 engine/audio.o
-                0x0000000080012210                audioTransferVagToSPU
+                0x000000008001220c       0xc0 engine/audio.o
+                0x000000008001220c                audioTransferVagToSPU
  .text.setVoiceVolumePitch
-                0x00000000800122d0       0x68 engine/audio.o
-                0x00000000800122d0                setVoiceVolumePitch
+                0x00000000800122cc       0x68 engine/audio.o
+                0x00000000800122cc                setVoiceVolumePitch
  .text.audioPlay
-                0x0000000080012338       0x40 engine/audio.o
-                0x0000000080012338                audioPlay
+                0x0000000080012334       0x40 engine/audio.o
+                0x0000000080012334                audioPlay
+ *fill*         0x0000000080012374        0x4 
  .text          0x0000000080012378       0x10 ../third_party/psyq/lib/libapi.a(a91.o)
                 0x0000000080012378                ChangeClearPAD
  .text          0x0000000080012388      0x290 ../third_party/psyq/lib/libapi.a(pad.o)
@@ -1238,13 +1239,13 @@ OUTPUT(BuzzyBee.elf elf32-tradlittlemips)
  .debug_ranges  0x0000000000000318       0x18 engine/timerz.o
  .debug_ranges  0x0000000000000330       0x38 engine/audio.o
 
-.debug_line     0x0000000000000000     0x1f74
- .debug_line    0x0000000000000000     0x138a main.o
- .debug_line    0x000000000000138a      0x79c engine/graphics.o
- .debug_line    0x0000000000001b26      0x115 engine/input.o
- .debug_line    0x0000000000001c3b      0x10d engine/timerz.o
- .debug_line    0x0000000000001d48      0x1c9 engine/audio.o
- .debug_line    0x0000000000001f11       0x63 ../third_party/common/crt0/crt0.o
+.debug_line     0x0000000000000000     0x1f6b
+ .debug_line    0x0000000000000000     0x1381 main.o
+ .debug_line    0x0000000000001381      0x79c engine/graphics.o
+ .debug_line    0x0000000000001b1d      0x115 engine/input.o
+ .debug_line    0x0000000000001c32      0x10d engine/timerz.o
+ .debug_line    0x0000000000001d3f      0x1c9 engine/audio.o
+ .debug_line    0x0000000000001f08       0x63 ../third_party/common/crt0/crt0.o
 
 .debug_str      0x0000000000000000      0xf7f
  .debug_str     0x0000000000000000      0xa33 main.o
