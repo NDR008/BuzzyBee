@@ -337,6 +337,7 @@ void gameMode(){
     if (mainHealth.level < 0) {
         mainHealth.level = 0;
         if (score > bestScore) { bestScore = score;}
+        pressStart.total_frames = 2;
         gameState = 5;
         time3 = mainTimer.totalsec;
     }
