@@ -44,6 +44,8 @@ SOFTWARE.
 #include "engine/audio.h"
 #include "sound/sfx/buzz1.h"
 #include "sound/sfx/menustart.h"
+#include "sound/sfx/beeHurt.h"
+#include "sound/sfx/beePU.h"
 
 // Global timer
 PSXTimer mainTimer;
@@ -111,6 +113,9 @@ Image clouds2L[cloudsN][1];
 
 int hitE = 0;
 int hitF = 0;
+int score = 0;
+int bestScore = 0;
+int time3; // when player won
 
 void initialize();
 void startScreen();
@@ -127,6 +132,7 @@ void initRocks();
 int checkHit(AnimatedObject *animatedObj);
 void initEnemies();
 void initHills();
+void gameOver();
 
 void initialize() {
     srand(1);
@@ -136,6 +142,8 @@ void initialize() {
     audioInit();
     audioTransferVagToSPU(buzz1, buzz1_size, SPU_1CH);
     audioTransferVagToSPU(menustart, menustart_size, SPU_0CH);
+    audioTransferVagToSPU(beeHurt, beeHurt_size, SPU_2CH);
+    audioTransferVagToSPU(beePU, beePU_size, SPU_3CH);
 
     in_init();  // init inputs
     in_update(); // should not be needed but there is a bug without it
@@ -232,6 +240,7 @@ void gameMode(){
     int oldHitE = hitE;
     hitE = checkHit(&enemies);
     if (hitE && !oldHitE) {
+        audioPlay(SPU_2CH, 0x1000, 0x1000);
         mainHealth.level -= 1500;
     }
 
@@ -297,6 +306,7 @@ void gameMode(){
         int oldHitF = hitF;
         hitF = checkHit(&flowers[i]);
         if (hitF && !oldHitF) {
+            audioPlay(SPU_3CH, 0x1000, 0x1000);
             mainHealth.level += 1000;
             flowers[i].x_pos = -50 * factor;
         }
@@ -319,9 +329,14 @@ void gameMode(){
         }
         animate(&hills[i]);
     }
-
+    score++;
     if (mainHealth.level > 5999) {mainHealth.level = 5999;}
-    if (mainHealth.level < 0) {mainHealth.level = 0;}
+    if (mainHealth.level < 0) {
+        mainHealth.level = 0;
+        if (score > bestScore) { bestScore = score;}
+        gameState = 5;
+        time3 = mainTimer.totalsec;
+    }
 }
 
 int checkHit(AnimatedObject *animatedObj){
@@ -350,6 +365,14 @@ void animate(AnimatedObject *animatedObj){
     }
     toDraw = moveImage(animatedObj->img_list[animatedObj->index], animatedObj->x_pos / factor, animatedObj->y_pos / factor);
     drawImage(toDraw);
+}
+
+void gameOver(){
+    setBackgroundColor(createColor(15, 15, 15)); // why not?
+    FntPrint("Your Score this time: %d\n", score);
+    FntPrint("Your Score this time: %d\n", bestScore);
+    FntPrint("\nCredits to: \nNDR008 (code), \nChadow123-654 (art),\n Muda (audio), \nKEROBOY(art)\n");
+    FntPrint("\nThanks to: \nNicolas, Sickle,\n Arthur, fgsfds,\n peach, Schappy,\n YetAnotherEmuDev\n");
 }
 
 void debugMode(){
@@ -556,7 +579,7 @@ void initIntro(){
 
 int main() {
     initialize();
-    printf("BuzzyBee v0.8 \n");
+    printf("BuzzyBee v0.9 Beta1 \n");
     mainTimer = createTimer();
     int time1;
     while (1) {
@@ -577,7 +600,19 @@ int main() {
         else if (gameState == 99){
             debugMode();
         }
-
+        else if (gameState == 5){
+            gameOver();
+            if (time2 - time3 > 5){
+                score = 0;
+                gameState = 0;
+                initPlayer();
+                initEnemies();
+                initGround();
+                initSky();
+                initRocks();
+                initHills();
+            }
+        }
         if (input_trig & PAD_START) {
             if (gameState == 0 & (time2 >= 2)){
                 time1 = mainTimer.totalsec;
