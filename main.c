@@ -48,7 +48,7 @@ SOFTWARE.
 // Global timer
 PSXTimer mainTimer;
 
-typedef struct{
+typedef struct AnimatedObject{
     int frame_n;            // this is the current frame
     int index;
     int total_frames;       // this is the total frame
@@ -60,8 +60,16 @@ typedef struct{
     Image *img_list;   // make this a list of Image (ok)
 } AnimatedObject;
 
+typedef struct Health {
+    int level;
+    Image *bar;
+    Image art;
+} Health;
+Image barL[5];
+
 AnimatedObject mainPlayer;
 Image mainPlayerL[4];
+Health mainHealth;
 
 # define enemiesN 1
 AnimatedObject enemies;
@@ -87,6 +95,9 @@ Image groundL[groundN][1];
 #define rocksN 3
 AnimatedObject rocks[rocksN];
 Image rocksL[rocksN][1];
+
+AnimatedObject flowers[rocksN];
+Image flowersL[rocksN][1];
 
 #define hillsN 5
 AnimatedObject hills[hillsN];
@@ -194,6 +205,12 @@ void gameIntro(){
 void gameMode(){   
     setBackgroundColor(createColor(100, 100, 200));
 
+    int drawHealth = (int) mainHealth.level / 1000;
+    for (int i=0; i<drawHealth; i++){
+        drawImage(mainHealth.bar[i]);
+    }
+    mainHealth.level = mainHealth.level - 5;
+
     // enemies on top
     enemies.x_pos += enemies.x_vel;
     if (enemies.x_pos < (-20 * factor)){
@@ -257,12 +274,15 @@ void gameMode(){
     for (int i=0; i < 3; i++){
         rocks[i].x_pos += rocks[i].x_vel;
         if (rocks[i].x_pos + 80 * factor <= 0){
-            int x1 = (SCREEN_WIDTH + 50 + rand() % 100) * factor;
-            int y1 = (SCREEN_HEIGHT - 140 - rand() % 100) * factor;
+            int x1 = (SCREEN_WIDTH + 100 + rand() % 50) * factor;
+            int y1 = (SCREEN_HEIGHT - 120 - rand() % 100) * factor;
             rocks[i].y_pos = y1;
             rocks[i].x_pos = x1;
+            flowers[i].x_pos = rocks[i].x_pos + flowersL[0][0].sprite.w / 2 * factor;
+            flowers[i].y_pos = rocks[i].y_pos - flowersL[0][0].sprite.h * factor;
         }
         animate(&rocks[i]);
+        animate(&flowers[i]);
     }    
     
     const int ground_width = ground[0].img_list[0].sprite.w;
@@ -287,7 +307,7 @@ void gameMode(){
 
 void checkHit(AnimatedObject *animatedObj){
     int previous_hit = hit;
-    int pad = 10;
+    int pad = 1;
     int target_y1 = animatedObj->y_pos / factor; // target top left
     int target_y2 = target_y1 + animatedObj->img_list[0].sprite.h; // target bottom left
     int target_x1 = animatedObj->x_pos / factor;
@@ -304,6 +324,9 @@ void checkHit(AnimatedObject *animatedObj){
     else {
         FntPrint("Hit!\n");
         hit = 1;
+        if (hit-previous_hit == 1){
+            mainHealth.level -= 500;
+        }
     }
 }
 
@@ -330,6 +353,12 @@ void debugMode(){
 
 // fixed
 void initPlayer(){
+    mainHealth.level = 5999;
+    for (int i=0; i<5; i++){
+        barL[i] = moveImage(scaleImage(createImage(img_health),400,40),5+i*20, 15);
+    }
+    mainHealth.bar = barL;
+
     mainPlayer.total_frames = 4;
     mainPlayer.frame_n = 0;
     mainPlayer.index = 0;
@@ -371,9 +400,18 @@ void initRocks(){
         rocks[s].index = 0;
         rocks[s].anim_rate = 99;
         rocks[s].x_pos = (SCREEN_WIDTH * s + 50 + rand() % 100) * factor;
-        rocks[s].y_pos = (SCREEN_HEIGHT - 140 - rand() % 100) * factor;
-        rocksL[s][0] = scaleImage(createImage(img_gnd_1), 100,100);
-        rocks[s].img_list = rocksL[s];
+        rocks[s].y_pos = (SCREEN_HEIGHT - 120 - rand() % 100) * factor;
+        rocksL[s][0] = createImage(img_gnd_1);
+        rocks[s].img_list = rocksL[s];        
+
+        flowers[s].total_frames = rocks[s].total_frames;
+        flowers[s].frame_n = rocks[s].frame_n;
+        flowers[s].x_vel = rocks[s].x_vel;
+        flowers[s].anim_rate = 99;
+        flowersL[s][0] = createImage(img_flower1);
+        flowers[s].x_pos = rocks[s].x_pos + flowersL[0][0].sprite.w / 2 * factor;
+        flowers[s].y_pos = rocks[s].y_pos - flowersL[0][0].sprite.h * factor;
+        flowers[s].img_list = flowersL[s];       
     }
 }
 
@@ -419,7 +457,7 @@ void initSky(){
     srand(1);
     for (int s=0; s<cloudsN; s++){
         int x1 = rand() % (500) * factor;
-        int y1 = (20+ rand() % 24) * factor;
+        int y1 = (50+ rand() % 24) * factor;
         int s1 = (1 + rand() % 2) * factor;
 
         int x2 = rand() % (500) * factor;
@@ -507,7 +545,7 @@ void initIntro(){
 
 int main() {
   initialize();
-    printf("BuzzyBee v0.3 \n");
+    printf("BuzzyBee v0.8 \n");
     mainTimer = createTimer();
     int time1;
     while (1) {
