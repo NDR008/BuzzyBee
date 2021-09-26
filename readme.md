@@ -1,6 +1,17 @@
 # BuzzyBee for 32bit Jam 2021  
 
-Preparing some basic functions for the game ahead of the jam.  
+A homebrew PSX game that can run on a PSX emulator or a real PSX (so long it can run unsigned CDs).
+
+The game works similar to Flappy-Bird in that tapping X increases the bee's speed up.
+
+Pressing "Select" pauses the game.
+Red bars at the top represent energy (they are continuosly reducing due to flying...)
+Touching flowers will give you an energy boost
+Hitting a wasp will significantly reduce your health.
+The goal is to work for as long as you can to make the Queen Bee happy.
+
+itch.io page: https://ndr008.itch.io/buzzy-bee
+Youtube gameplay: https://youtu.be/r3NW8sTUX1c
 
 ![Release 1.1](readme_images/Level0.png)
 
