@@ -1,5 +1,7 @@
 # BuzzyBee for 32bit Jam 2021  
 
+![image](https://user-images.githubusercontent.com/34957530/134812368-63838dc2-4b40-402d-9f13-0c8b515c8738.png)
+
 Preparing some basic functions for the game ahead of the jam.  
 
 ![Early game prototype image](readme_images/EarlyProto.jpg)
