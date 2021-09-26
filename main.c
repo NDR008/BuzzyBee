@@ -1,5 +1,4 @@
 // main.c BuzzyBee v0.1 for 32bitJam 2021
-
 /*
 
 MIT License
@@ -374,8 +373,8 @@ void gameOver(){
     setBackgroundColor(createColor(15, 15, 15)); // why not?
     FntPrint("Your Last attempt: %d\n", score);
     FntPrint("Your Best score: %d\n", bestScore);
-    FntPrint("\nCredits to: \n- NDR008 (Producer/Dev), \n- Chadow (art),\n- nooisy -aka muda (audio), \n- KEROBOY (art)\n");
-    FntPrint("\n\nThanks to: \nNicolas, Sickle, Arthur,\nfgsfds, peach, Schappy,\nYetAnotherEmuDev\n");
+    FntPrint("\nCredits to: \n- NDR008 (Producer/Dev), \n- Chadow (art),\n- nooisy -aka muda (audio), \n- KEROBOY (art)\n- ABelliqueux (3D Logo)");
+    FntPrint("\n\nThanks to: \nNicolas, Sickle, Arthur,\nfgsfds, peach, \nSquaresoft74, Danhans42,\nYetAnotherEmuDev, crimester");
 }
 
 void debugMode(){

@@ -203,8 +203,9 @@ void setBackgroundColor(Color color) {
 
 //Initialize screen, 
 void initializeScreen() {
-	if (*(char *)0xbfc7ff52=='E') setScreenMode(SCREEN_MODE_PAL);
-   	else setScreenMode(SCREEN_MODE_NTSC);
+	//if (*(char *)0xbfc7ff52=='E') setScreenMode(SCREEN_MODE_PAL);
+   	//else setScreenMode(SCREEN_MODE_NTSC);
+    setScreenMode(SCREEN_MODE_PAL);  // Force PAL
 
 	SetDispMask(1);
 	ResetGraph(0);
