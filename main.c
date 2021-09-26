@@ -374,7 +374,7 @@ void gameOver(){
     FntPrint("Your Last attempt: %d\n", score);
     FntPrint("Your Best score: %d\n", bestScore);
     FntPrint("\nCredits to: \n- NDR008 (Producer/Dev), \n- Chadow (art),\n- nooisy -aka muda (audio), \n- KEROBOY (art)\n- ABelliqueux (3D Logo)");
-    FntPrint("\n\nThanks to: \nNicolas, Sickle, Arthur,\nfgsfds, peach, \nYetAnotherEmuDev\n");
+    FntPrint("\n\nThanks to: \nNicolas, Sickle, Arthur,\nfgsfds, peach, \nSquaresoft7, Danhans42,\nYetAnotherEmuDev, crimester");
 }
 
 void debugMode(){
