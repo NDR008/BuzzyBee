@@ -15,8 +15,8 @@ void audioInit() {
     l_c_attr.mvol.left  = 0x3fff;
     l_c_attr.mvol.right = 0x3fff;
     // Cd volume should be in range 0x0000 - 0x7fff
-    l_c_attr.cd.volume.left = 0x7fff;
-    l_c_attr.cd.volume.right = 0x7fff;
+    l_c_attr.cd.volume.left = 0x3fff;
+    l_c_attr.cd.volume.right = 0x3fff;
     // Enable CD input ON
     l_c_attr.cd.mix = SPU_ON;
 

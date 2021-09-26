@@ -131,7 +131,7 @@ void animate(AnimatedObject *animatedObj);
 void initGround();
 void initSky();
 void initRocks();
-int checkHit(AnimatedObject *animatedObj);
+int checkHit(AnimatedObject *animatedObj, int pad);
 void initEnemies();
 void initHills();
 void gameOver();
@@ -241,7 +241,7 @@ void gameMode(){
     }
     animate(&enemies);
     int oldHitE = hitE;
-    hitE = checkHit(&enemies);
+    hitE = checkHit(&enemies, 5);
     if (hitE && !oldHitE) {
         audioPlay(SPU_2CH, 0x1000, 0x1000);
         mainHealth.level -= 1500;
@@ -307,7 +307,7 @@ void gameMode(){
         animate(&flowers[i]);
 
         int oldHitF = hitF;
-        hitF = checkHit(&flowers[i]);
+        hitF = checkHit(&flowers[i], 1);
         if (hitF && !oldHitF) {
             audioPlay(SPU_3CH, 0x1000, 0x1000);
             mainHealth.level += 1000;
@@ -343,10 +343,9 @@ void gameMode(){
     }
 }
 
-int checkHit(AnimatedObject *animatedObj){
+int checkHit(AnimatedObject *animatedObj, int pad){
     // AABB detection
     int new_hit = 0;
-    int pad = 1;
     int target_y1 = animatedObj->y_pos / factor; // target top left
     int target_y2 = target_y1 + animatedObj->img_list[0].sprite.h; // target bottom left
     int target_x1 = animatedObj->x_pos / factor;
@@ -373,10 +372,10 @@ void animate(AnimatedObject *animatedObj){
 
 void gameOver(){
     setBackgroundColor(createColor(15, 15, 15)); // why not?
-    FntPrint("Your Score this time: %d\n", score);
-    FntPrint("Your Score this time: %d\n", bestScore);
-    FntPrint("\nCredits to: \nNDR008 (code), \nChadow123-654 (art),\n Muda (audio), \nKEROBOY(art)\n");
-    FntPrint("\nThanks to: \nNicolas, Sickle,\n Arthur, fgsfds,\n peach, Schappy,\n YetAnotherEmuDev\n");
+    FntPrint("Your Last attempt: %d\n", score);
+    FntPrint("Your Best score: %d\n", bestScore);
+    FntPrint("\nCredits to: \n- NDR008 (Producer/Dev), \n- Chadow (art),\n- nooisy -aka muda (audio), \n- KEROBOY (art)\n");
+    FntPrint("\n\nThanks to: \nNicolas, Sickle, Arthur,\nfgsfds, peach, Schappy,\nYetAnotherEmuDev\n");
 }
 
 void debugMode(){
@@ -583,7 +582,7 @@ void initIntro(){
 
 int main() {
     initialize();
-    printf("BuzzyBee v0.9 Beta1 \n");
+    printf("BuzzyBee v1.0 (Release) \n");
     mainTimer = createTimer();
     int time1;
     while (1) {
@@ -606,7 +605,7 @@ int main() {
         }
         else if (gameState == 5){
             gameOver();
-            if (time2 - time3 > 5){
+            if (time2 - time3 > 6){
                 score = 0;
                 gameState = 0;
                 initPlayer();
