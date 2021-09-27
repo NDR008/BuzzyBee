@@ -147,7 +147,7 @@ void initialize() {
     audioTransferVagToSPU(beePU, beePU_size, SPU_3CH);
 
     in_init();  // init inputs
-    in_update(); // should not be needed but there is a bug without it
+    //in_update(); // should not be needed but there is a bug without it
 	initializeDebugFont();
     initIntro();
 
@@ -159,7 +159,6 @@ void initialize() {
     initHills();
 
     DsPlay(2, tracks, 0);
-    //load sprites
 }
 
 // scaling the graphics (example video width is 320px but "game world" is 320 x factor)
